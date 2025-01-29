@@ -1181,52 +1181,99 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CommonScaffold(
       appBar: const CustomTopBar(), // Use the CustomTopBar here
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the left
-        children: [
-          // Page name "Profile"
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, top: 16.0), // Space from left and top
-            child: const Text(
-              'Profile',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the left
+          children: [
+            // Page name "Profile"
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, top: 16.0), // Space from left and top
+              child: const Text(
+                'Profile',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 20), // Space between title and content
+            const SizedBox(height: 20), // Space between title and content
 
-          // Profile content
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage('assets/profile_placeholder.png'), // Replace with actual profile image
-                ),
-                const SizedBox(height: 20),
-                const Text(
-                  'User Name',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  'user@example.com',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-                const SizedBox(height: 30),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context); // Go back to Login Page
-                  },
-                  child: const Text('Logout'),
-                ),
-              ],
+            // Profile Picture Section
+            Center(
+              child: Column(
+                children: [
+                  const CircleAvatar(
+                    radius: 50,
+                    backgroundImage: AssetImage('assets/profile_pic.png'), // Add your profile image asset
+                  ),
+                  const SizedBox(height: 10),
+                  const Text(
+                    'NAME',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 5),
+                  const Text(
+                    'Check-Up ALERT',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          // Handle Edit Profile button press
+                        },
+                        child: const Text('Edit Profile'),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Handle Settings button press
+                        },
+                        child: const Text('Settings'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+
+            // Patient Details Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Patient Details', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  const Text('Age: ', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  const Text('Weight: ', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  const Text('Height: ', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  const Text('Gender:', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  const Text('user Condition: ', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 20),
+                  const Text('Allergies', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  const Text('', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  const Text('', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 20),
+                  const Text('Medical History', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  const Text('', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  const Text('', style: TextStyle(fontSize: 16)),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
