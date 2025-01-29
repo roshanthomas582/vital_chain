@@ -19,40 +19,51 @@ class VitalChainApp extends StatelessWidget {
     );
   }
 }
+
+
+
 class CustomTopBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomTopBar({Key? key}) : super(key: key);
 
   @override
-  Size get preferredSize => const Size.fromHeight(50); // Set the preferred height of the app bar
+  Size get preferredSize => const Size.fromHeight(60); // Increased height
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity, // Ensures full width
       color: Colors.lightBlue[100], // Light blue background
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Row(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16), // Adjusted padding
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end, // Align contents to the bottom
         children: [
-          // Logo
-          Image.asset(
-            'web/icons/WhatsApp Image 2025-01-26 at 8.44.37 AM.jpeg',
-            width: 40,
-            height: 40,
-          ),
-          const SizedBox(width: 10), // Space between logo and text
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end, // Lowers the contents
+            children: [
+              // Logo
+              Image.asset(
+                'web/icons/WhatsApp Image 2025-01-26 at 8.44.37 AM.jpeg',
+                width: 40,
+                height: 40,
+              ),
+              const SizedBox(width: 10), // Space between logo and text
 
-          // Text "VITAL CHAIN"
-          const Text(
-            'VITAL CHAIN',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+              // Text "VITAL CHAIN"
+              const Text(
+                'VITAL CHAIN',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 }
+
 
 
 class CommonScaffold extends StatelessWidget {
@@ -422,7 +433,12 @@ class LoginPage extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ProfilePage()),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     shape: RoundedRectangleBorder(
@@ -1151,6 +1167,63 @@ class _RegisterAsDoctorPageState extends State<RegisterAsDoctorPage> {
                   fit: BoxFit.cover,
                 ),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CommonScaffold(
+      appBar: const CustomTopBar(), // Use the CustomTopBar here
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the left
+        children: [
+          // Page name "Profile"
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, top: 16.0), // Space from left and top
+            child: const Text(
+              'Profile',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(height: 20), // Space between title and content
+
+          // Profile content
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const CircleAvatar(
+                  radius: 50,
+                  backgroundImage: AssetImage('assets/profile_placeholder.png'), // Replace with actual profile image
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'User Name',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'user@example.com',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Go back to Login Page
+                  },
+                  child: const Text('Logout'),
+                ),
+              ],
             ),
           ),
         ],
