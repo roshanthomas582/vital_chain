@@ -1174,66 +1174,97 @@ class _RegisterAsDoctorPageState extends State<RegisterAsDoctorPage> {
     );
   }
 }
+
+
+
+
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
+
+  void _showSettings(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: "Settings",
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, anim1, anim2) {
+        return Align(
+          alignment: Alignment.centerRight,
+          child: FractionallySizedBox(
+            widthFactor: 0.5,
+            heightFactor: 1.0,
+            child: SettingsPage(),
+          ),
+        );
+      },
+      transitionBuilder: (context, anim1, anim2, child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(1, 0),
+            end: Offset.zero,
+          ).animate(anim1),
+          child: child,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return CommonScaffold(
-      appBar: const CustomTopBar(), // Use the CustomTopBar here
+      appBar: const CustomTopBar(),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // Aligns the text to the left
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Page name "Profile"
             Padding(
-              padding: const EdgeInsets.only(left: 16.0, top: 16.0), // Space from left and top
+              padding: const EdgeInsets.only(left: 16.0, top: 16.0),
               child: const Text(
                 'Profile',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
-            const SizedBox(height: 20), // Space between title and content
+            const SizedBox(height: 20),
 
-            // Profile Picture Section
             Center(
               child: Column(
                 children: [
                   const CircleAvatar(
                     radius: 50,
-                    backgroundImage: AssetImage('assets/profile_pic.png'), // Add your profile image asset
+                    backgroundImage: AssetImage('assets/profile_pic.png'),
                   ),
                   const SizedBox(height: 10),
-                  const Text(
-                    'NAME',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+                  const Text('NAME', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 5),
-                  const Text(
-                    'Check-Up ALERT',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
+                  const Text('Check-Up ALERT', style: TextStyle(fontSize: 16, color: Colors.grey)),
                   const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          // Handle Edit Profile button press
-                        },
-                        child: const Text('Edit Profile'),
-                      ),
-                      const SizedBox(width: 10),
-                      ElevatedButton(
-                        onPressed: () {
-                          // Handle Settings button press
-                        },
-                        child: const Text('Settings'),
-                      ),
-                    ],
+
+                  // Buttons with equal sizes
+                  SizedBox(
+                    width: 250,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child:ElevatedButton(
+                    onPressed: () {
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EditingPage()),
+                  );
+                  },
+                    child: const Text('Edit Profile'),
+                  ),
+                        ),
+                  const SizedBox(width: 10),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () => _showSettings(context),
+                            child: const Text('Settings'),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -1256,7 +1287,7 @@ class ProfilePage extends StatelessWidget {
                   const SizedBox(height: 8),
                   const Text('Gender:', style: TextStyle(fontSize: 16)),
                   const SizedBox(height: 8),
-                  const Text('user Condition: ', style: TextStyle(fontSize: 16)),
+                  const Text('User Condition: ', style: TextStyle(fontSize: 16)),
                   const SizedBox(height: 20),
                   const Text('Allergies', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
@@ -1273,6 +1304,154 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+class SettingsPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.white,
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(20),
+        bottomLeft: Radius.circular(20),
+      ),
+      child: Column(
+        children: [
+          const SizedBox(height: 25), // Added space to lower the text
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Settings",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                // Add more settings options here if needed
+              ],
+            ),
+          ),
+          const Spacer(), // Pushes logout button to the bottom
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Close settings panel
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                minimumSize: const Size(double.infinity, 50), // Full width button
+              ),
+              child: const Text("Logout", style: TextStyle(color: Colors.white)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+
+class EditingPage extends StatelessWidget {
+  const EditingPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const CustomTopBar(), // Custom top bar
+      resizeToAvoidBottomInset: true, // Ensures content resizes when keyboard appears
+      body: SingleChildScrollView( // Wrap the content in a scrollable view
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Profile Picture Section
+              Center(
+                child: Column(
+                  children: [
+                    const CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage('assets/profile_pic.png'), // Placeholder for profile pic
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Handle edit profile picture action
+                      },
+                      child: const Text("Edit Profile Picture"),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Edit Profile Section
+              const Text(
+                "Edit Profile",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+
+              // Profile fields
+              TextFormField(
+                decoration: const InputDecoration(labelText: "Name"),
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                decoration: const InputDecoration(labelText: "Age"),
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                decoration: const InputDecoration(labelText: "Weight"),
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                decoration: const InputDecoration(labelText: "Height"),
+              ),
+              const SizedBox(height: 20),
+
+              // Save Button
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Go back to Profile Page
+                  },
+                  child: const Text("Save Changes"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+
+      // Chatbot Floating Action Button
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigate to chat page
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ChatPage()),
+          );
+        },
+        backgroundColor: Colors.blue,
+        child: ClipOval(
+          child: Image.asset(
+            'assets/images/bot_icon.png', // Assuming this is your chatbot icon
+            height: 50,
+            width: 50,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );
