@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 void main() {
   runApp(VitalChainApp());
 }
@@ -548,7 +549,6 @@ class RegisterPage extends StatelessWidget {
 }
 
 
-
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
 
@@ -558,14 +558,41 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _controller = TextEditingController();
-  final List<String> _messages = [];
+  final List<Map<String, String>> _messages = [];
+  bool _isLoading = false;
 
-  void _sendMessage() {
+  Future<void> _sendMessage() async {
     if (_controller.text.isNotEmpty) {
+      String userMessage = _controller.text;
       setState(() {
-        _messages.add(_controller.text);
+        _messages.add({"role": "user", "content": userMessage});
+        _isLoading = true;  // Start loading while waiting for the response
         _controller.clear();
       });
+
+      try {
+        final response = await http.post(
+          Uri.parse("http://192.168.128.44:5000"), // Ensure the IP is correct and accessible
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode({"message": userMessage}),
+        );
+
+        if (response.statusCode == 200) {
+          final responseData = jsonDecode(response.body);
+          setState(() {
+            _messages.add({"role": "bot", "content": responseData["reply"]});
+            _isLoading = false;  // Stop loading after receiving the response
+          });
+        } else {
+          throw Exception("Failed to fetch response from the server.");
+        }
+      } catch (error) {
+        print("Error: $error");
+        setState(() {
+          _messages.add({"role": "bot", "content": "Error connecting to server."});
+          _isLoading = false;  // Stop loading in case of error
+        });
+      }
     }
   }
 
@@ -582,12 +609,31 @@ class _ChatPageState extends State<ChatPage> {
             child: ListView.builder(
               itemCount: _messages.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(_messages[index]),
+                final message = _messages[index];
+                bool isUser = message["role"] == "user";
+                return Container(
+                  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: isUser ? Colors.blue[100] : Colors.green[100],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+                  child: Text(message["content"]!, style: TextStyle(fontSize: 16)),
                 );
               },
             ),
           ),
+          if (_isLoading) ...[
+            // Show loading indicator when the bot is responding
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Align(
+                alignment: Alignment.center,
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          ],
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
@@ -612,6 +658,8 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 }
+
+
 class RegisterAsUserPage extends StatefulWidget {
   const RegisterAsUserPage({Key? key}) : super(key: key);
 

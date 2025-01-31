@@ -11,10 +11,9 @@ environment:
   sdk: ^3.6.1
 
 dependencies:
-
-
   flutter:
     sdk: flutter
+  http: ^0.13.4
 
   # Cupertino Icons for iOS-style icons.
   cupertino_icons: ^1.0.8
