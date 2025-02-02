@@ -548,7 +548,6 @@ class RegisterPage extends StatelessWidget {
   }
 }
 
-
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
 
@@ -560,37 +559,44 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _controller = TextEditingController();
   final List<Map<String, String>> _messages = [];
   bool _isLoading = false;
+  final FocusNode _focusNode = FocusNode();
 
   Future<void> _sendMessage() async {
     if (_controller.text.isNotEmpty) {
-      String userMessage = _controller.text;
+      String userMessage = _controller.text.trim();
+
       setState(() {
         _messages.add({"role": "user", "content": userMessage});
-        _isLoading = true;  // Start loading while waiting for the response
-        _controller.clear();
+        _isLoading = true;
       });
+
+      _controller.clear(); // Clears input field after capturing the message
 
       try {
         final response = await http.post(
-          Uri.parse("http://192.168.128.44:5000"), // Ensure the IP is correct and accessible
+          Uri.parse("http://192.168.1.7:5000/chat"), // Ensure the IP is correct and accessible
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({"message": userMessage}),
         );
 
         if (response.statusCode == 200) {
           final responseData = jsonDecode(response.body);
+
           setState(() {
-            _messages.add({"role": "bot", "content": responseData["reply"]});
-            _isLoading = false;  // Stop loading after receiving the response
+            _messages.add({"role": "bot", "content": responseData["reply"] ?? "No response from server"});
           });
         } else {
-          throw Exception("Failed to fetch response from the server.");
+          setState(() {
+            _messages.add({"role": "bot", "content": "Failed to fetch response from the server."});
+          });
         }
       } catch (error) {
-        print("Error: $error");
         setState(() {
           _messages.add({"role": "bot", "content": "Error connecting to server."});
-          _isLoading = false;  // Stop loading in case of error
+        });
+      } finally {
+        setState(() {
+          _isLoading = false;
         });
       }
     }
@@ -598,64 +604,77 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("VITAL CHAIN GUIDE"),
-        backgroundColor: Colors.blue,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final message = _messages[index];
-                bool isUser = message["role"] == "user";
-                return Container(
-                  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: isUser ? Colors.blue[100] : Colors.green[100],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Text(message["content"]!, style: TextStyle(fontSize: 16)),
-                );
-              },
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(), // Dismiss keyboard when tapping outside
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("VITAL CHAIN GUIDE"),
+          backgroundColor: Colors.blue,
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: _messages.length,
+                itemBuilder: (context, index) {
+                  final message = _messages[index];
+                  bool isUser = message["role"] == "user";
+
+                  return Align(
+                    alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: isUser ? Colors.blue[100] : Colors.green[100],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        message["content"]!,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-          if (_isLoading) ...[
-            // Show loading indicator when the bot is responding
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Align(
-                alignment: Alignment.center,
+            if (_isLoading)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
                 child: CircularProgressIndicator(),
+              ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      decoration: const InputDecoration(
+                        hintText: "Type your message...",
+                      ),
+                      onSubmitted: (_) => _sendMessage(),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.send),
+                    onPressed: _sendMessage,
+                  ),
+                ],
               ),
             ),
           ],
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      hintText: "Type your message...",
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: _sendMessage,
-                ),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 }
 
