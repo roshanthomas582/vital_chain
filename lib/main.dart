@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io'; 
+
+
+
 void main() {
   runApp(VitalChainApp());
 }
@@ -437,9 +441,10 @@ class LoginPage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const ProfilePage()),
+                      MaterialPageRoute(builder: (context) => const HomePage()),
                     );
                   },
+
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     shape: RoundedRectangleBorder(
@@ -459,6 +464,9 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
+
+
+
 class RegisterPage extends StatelessWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
@@ -548,6 +556,8 @@ class RegisterPage extends StatelessWidget {
   }
 }
 
+
+
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
 
@@ -574,7 +584,7 @@ class _ChatPageState extends State<ChatPage> {
 
       try {
         final response = await http.post(
-          Uri.parse("http://192.168.1.7:5000/chat"), // Ensure the IP is correct and accessible
+          Uri.parse("http://192.168.128.44:5000/chat"), //192.168.1.7  kerala vision home
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({"message": userMessage}),
         );
@@ -1314,16 +1324,16 @@ class ProfilePage extends StatelessWidget {
                       children: [
                         Expanded(
                           child:ElevatedButton(
-                    onPressed: () {
-                  Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const EditingPage()),
-                  );
-                  },
-                    child: const Text('Edit Profile'),
-                  ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const EditingPage()),
+                              );
+                            },
+                            child: const Text('Edit Profile'),
+                          ),
                         ),
-                  const SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () => _showSettings(context),
@@ -1520,6 +1530,395 @@ class EditingPage extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
+      ),
+    );
+  }
+}
+
+
+class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        // Close the app when back button is pressed on HomePage (works for Android/iOS)
+        if (Platform.isAndroid || Platform.isIOS) {
+          exit(0);  // Close the app on Android/iOS
+        }
+        return false;  // Returning false prevents further navigation
+      },
+      child: Scaffold(
+        appBar: const CustomTopBar(),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 96), // Adjusted to prevent overlap with FAB and bottom bar height
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Home Page",
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const ProfilePage()),
+                            );
+                          },
+                          child: const CircleAvatar(
+                            radius: 25,
+                            backgroundImage: AssetImage('assets/images/profile_icon.png'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: const [
+                        Text("Tap the profile icon to go to Profile Page"),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        bottomNavigationBar: Container(
+          height: 100, // Bottom navigation bar height
+          child: BottomAppBar(
+            shape: const CircularNotchedRectangle(),
+            notchMargin: 8.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildNavButton(Icons.home, "Home", context, const HomePage()),
+                _buildNavButton(Icons.search, "Search", context, const SearchPage()),
+                _buildNavButton(Icons.show_chart, "Graph", context, const GraphPage()),
+              ],
+            ),
+          ),
+        ),
+        floatingActionButton: Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10, right: 20),
+            child: _buildChatBotButton(context),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatBotButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ChatPage()),
+        );
+      },
+      backgroundColor: Colors.blue,
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/bot_icon.png',
+          height: 50,
+          width: 50,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildNavButton(IconData icon, String label, BuildContext context, Widget page) {
+    return GestureDetector(
+      onTap: () {
+        // Avoid navigating to the same page if it's already open
+        if (context.widget.runtimeType != page.runtimeType) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => page),
+            ModalRoute.withName('/'), // Clears the stack and goes back to HomePage
+          );
+        }
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 24,
+            backgroundColor: Colors.blue,
+            child: Icon(icon, color: Colors.white, size: 28),
+          ),
+          const SizedBox(height: 2),
+          Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+}
+
+class SearchPage extends StatelessWidget {
+  const SearchPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          ModalRoute.withName('/'),
+        );
+        return false;
+      },
+      child: Scaffold(
+        appBar: const CustomTopBar(),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    "Search",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: "Search...",
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.shade200,
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    "Search results will appear here...",
+                    style: TextStyle(color: Colors.grey.shade600),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        bottomNavigationBar: Container(
+          height: 100,
+          child: BottomAppBar(
+            shape: const CircularNotchedRectangle(),
+            notchMargin: 8.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildNavButton(Icons.home, "Home", context, const HomePage()),
+                _buildNavButton(Icons.search, "Search", context, const SearchPage()),
+                _buildNavButton(Icons.show_chart, "Graph", context, const GraphPage()),
+              ],
+            ),
+          ),
+        ),
+        floatingActionButton: Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10, right: 20),
+            child: _buildChatBotButton(context),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatBotButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ChatPage()),
+        );
+      },
+      backgroundColor: Colors.blue,
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/bot_icon.png',
+          height: 50,
+          width: 50,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildNavButton(
+      IconData icon, String label, BuildContext context, Widget page) {
+    return GestureDetector(
+      onTap: () {
+        if (context.widget.runtimeType != page.runtimeType) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => page),
+            ModalRoute.withName('/'),
+          );
+        }
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 25,
+            backgroundColor: Colors.blue,
+            child: Icon(icon, color: Colors.white, size: 30),
+          ),
+          const SizedBox(height: 4),
+          Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+}
+
+class GraphPage extends StatelessWidget {
+  const GraphPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          ModalRoute.withName('/'),
+        );
+        return false;
+      },
+      child: Scaffold(
+        appBar: const CustomTopBar(),
+        body: SafeArea(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  "Graph Data",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: Container(
+                    height: 300,
+                    width: double.infinity,
+                    margin: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade400),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        "Graph will be displayed here...",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        bottomNavigationBar: Container(
+          height: 100,
+          padding: const EdgeInsets.only(top: 0),
+          child: BottomAppBar(
+            shape: const CircularNotchedRectangle(),
+            notchMargin: 8.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildNavButton(Icons.home, "Home", context, const HomePage()),
+                _buildNavButton(Icons.search, "Search", context, const SearchPage()),
+                _buildNavButton(Icons.show_chart, "Graph", context, const GraphPage()),
+              ],
+            ),
+          ),
+        ),
+        floatingActionButton: Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10, right: 20),
+            child: _buildChatBotButton(context),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatBotButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ChatPage()),
+        );
+      },
+      backgroundColor: Colors.blue,
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/bot_icon.png',
+          height: 50,
+          width: 50,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildNavButton(
+      IconData icon, String label, BuildContext context, Widget page) {
+    return GestureDetector(
+      onTap: () {
+        if (context.widget.runtimeType != page.runtimeType) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => page),
+            ModalRoute.withName('/'),
+          );
+        }
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 25,
+            backgroundColor: Colors.blue,
+            child: Icon(icon, color: Colors.white, size: 30),
+          ),
+          const SizedBox(height: 4),
+          Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+        ],
       ),
     );
   }
