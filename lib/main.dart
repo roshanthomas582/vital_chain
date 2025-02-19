@@ -25,51 +25,58 @@ class VitalChainApp extends StatelessWidget {
   }
 }
 
-
-
 class CustomTopBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomTopBar({Key? key}) : super(key: key);
+  final VoidCallback? onBackPress; // Custom back action
+
+  const CustomTopBar({Key? key, this.onBackPress}) : super(key: key);
 
   @override
   Size get preferredSize => const Size.fromHeight(60); // Increased height
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity, // Ensures full width
-      color: Colors.lightBlue[100], // Light blue background
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16), // Adjusted padding
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end, // Align contents to the bottom
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end, // Lowers the contents
-            children: [
-              // Logo
-              Image.asset(
-                'web/icons/WhatsApp Image 2025-01-26 at 8.44.37 AM.jpeg',
-                width: 40,
-                height: 40,
-              ),
-              const SizedBox(width: 10), // Space between logo and text
-
-              // Text "VITAL CHAIN"
-              const Text(
-                'VITAL CHAIN',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: () {
+        if (onBackPress != null) {
+          onBackPress!(); // Use custom back function if provided
+        } else if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop(); // Default back action
+        }
+      },
+      child: Container(
+        width: double.infinity, // Ensures full width
+        color: Colors.lightBlue[100], // Light blue background
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16), // Adjusted padding
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end, // Align contents to the bottom
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end, // Lowers the contents
+              children: [
+                // Logo
+                Image.asset(
+                  'web/icons/WhatsApp Image 2025-01-26 at 8.44.37 AM.jpeg',
+                  width: 40,
+                  height: 40,
                 ),
-              ),
-            ],
-          ),
-        ],
+                const SizedBox(width: 10), // Space between logo and text
+
+                // Text "VITAL CHAIN"
+                const Text(
+                  'VITAL CHAIN',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
-
 
 class CommonScaffold extends StatelessWidget {
   final Widget body;
@@ -584,7 +591,7 @@ class _ChatPageState extends State<ChatPage> {
 
       try {
         final response = await http.post(
-          Uri.parse("http://192.168.128.44:5000/chat"), //192.168.1.7  kerala vision home
+          Uri.parse("http://192.168.128.44:5000/chat"),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({"message": userMessage}),
         );
@@ -1534,8 +1541,6 @@ class EditingPage extends StatelessWidget {
     );
   }
 }
-
-
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -1543,18 +1548,23 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // Close the app when back button is pressed on HomePage (works for Android/iOS)
         if (Platform.isAndroid || Platform.isIOS) {
-          exit(0);  // Close the app on Android/iOS
+          exit(0);
         }
-        return false;  // Returning false prevents further navigation
+        return false;
       },
       child: Scaffold(
-        appBar: const CustomTopBar(),
+        appBar: CustomTopBar(
+          onBackPress: () {
+            if (Platform.isAndroid || Platform.isIOS) {
+              exit(0);
+            }
+          },
+        ),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 96), // Adjusted to prevent overlap with FAB and bottom bar height
+              padding: const EdgeInsets.only(bottom: 96),
               child: Column(
                 children: [
                   Padding(
@@ -1597,21 +1607,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ),
-        bottomNavigationBar: Container(
-          height: 100, // Bottom navigation bar height
-          child: BottomAppBar(
-            shape: const CircularNotchedRectangle(),
-            notchMargin: 8.0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildNavButton(Icons.home, "Home", context, const HomePage()),
-                _buildNavButton(Icons.search, "Search", context, const SearchPage()),
-                _buildNavButton(Icons.show_chart, "Graph", context, const GraphPage()),
-              ],
-            ),
-          ),
-        ),
+        bottomNavigationBar: _buildBottomNavBar(context),
         floatingActionButton: Align(
           alignment: Alignment.bottomRight,
           child: Padding(
@@ -1643,15 +1639,33 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  Widget _buildBottomNavBar(BuildContext context) {
+    return Container(
+      height: 100,
+      child: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavButton(Icons.home, "Home", context, const HomePage()),
+            _buildNavButton(Icons.search, "Search", context, const SearchPage()),
+            _buildNavButton(Icons.show_chart, "Graph", context, const GraphPage()),
+            _buildNavButton(Icons.medical_services, "Prescription", context, const PrescriptionPage()),
+          ],
+        ),
+      ),
+    );
+  }
+
   static Widget _buildNavButton(IconData icon, String label, BuildContext context, Widget page) {
     return GestureDetector(
       onTap: () {
-        // Avoid navigating to the same page if it's already open
         if (context.widget.runtimeType != page.runtimeType) {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => page),
-            ModalRoute.withName('/'), // Clears the stack and goes back to HomePage
+            ModalRoute.withName('/'),
           );
         }
       },
@@ -1670,7 +1684,6 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
 class SearchPage extends StatelessWidget {
   const SearchPage({Key? key}) : super(key: key);
 
@@ -1686,7 +1699,15 @@ class SearchPage extends StatelessWidget {
         return false;
       },
       child: Scaffold(
-        appBar: const CustomTopBar(),
+        appBar: CustomTopBar(
+          onBackPress: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+              ModalRoute.withName('/'),
+            );
+          },
+        ),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Column(
@@ -1723,21 +1744,7 @@ class SearchPage extends StatelessWidget {
             ),
           ),
         ),
-        bottomNavigationBar: Container(
-          height: 100,
-          child: BottomAppBar(
-            shape: const CircularNotchedRectangle(),
-            notchMargin: 8.0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildNavButton(Icons.home, "Home", context, const HomePage()),
-                _buildNavButton(Icons.search, "Search", context, const SearchPage()),
-                _buildNavButton(Icons.show_chart, "Graph", context, const GraphPage()),
-              ],
-            ),
-          ),
-        ),
+        bottomNavigationBar: _buildBottomNavBar(context),
         floatingActionButton: Align(
           alignment: Alignment.bottomRight,
           child: Padding(
@@ -1769,8 +1776,26 @@ class SearchPage extends StatelessWidget {
     );
   }
 
-  static Widget _buildNavButton(
-      IconData icon, String label, BuildContext context, Widget page) {
+  Widget _buildBottomNavBar(BuildContext context) {
+    return Container(
+      height: 100,
+      child: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavButton(Icons.home, "Home", context, const HomePage()),
+            _buildNavButton(Icons.search, "Search", context, const SearchPage()),
+            _buildNavButton(Icons.show_chart, "Graph", context, const GraphPage()),
+            _buildNavButton(Icons.medical_services, "Prescription", context, const PrescriptionPage()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildNavButton(IconData icon, String label, BuildContext context, Widget page) {
     return GestureDetector(
       onTap: () {
         if (context.widget.runtimeType != page.runtimeType) {
@@ -1785,11 +1810,11 @@ class SearchPage extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           CircleAvatar(
-            radius: 25,
+            radius: 24,
             backgroundColor: Colors.blue,
-            child: Icon(icon, color: Colors.white, size: 30),
+            child: Icon(icon, color: Colors.white, size: 28),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
         ],
       ),
@@ -1812,7 +1837,15 @@ class GraphPage extends StatelessWidget {
         return false;
       },
       child: Scaffold(
-        appBar: const CustomTopBar(),
+        appBar: CustomTopBar(
+          onBackPress: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+              ModalRoute.withName('/'),
+            );
+          },
+        ),
         body: SafeArea(
           child: Column(
             children: [
@@ -1849,22 +1882,7 @@ class GraphPage extends StatelessWidget {
             ],
           ),
         ),
-        bottomNavigationBar: Container(
-          height: 100,
-          padding: const EdgeInsets.only(top: 0),
-          child: BottomAppBar(
-            shape: const CircularNotchedRectangle(),
-            notchMargin: 8.0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildNavButton(Icons.home, "Home", context, const HomePage()),
-                _buildNavButton(Icons.search, "Search", context, const SearchPage()),
-                _buildNavButton(Icons.show_chart, "Graph", context, const GraphPage()),
-              ],
-            ),
-          ),
-        ),
+        bottomNavigationBar: _buildBottomNavBar(context),
         floatingActionButton: Align(
           alignment: Alignment.bottomRight,
           child: Padding(
@@ -1896,8 +1914,216 @@ class GraphPage extends StatelessWidget {
     );
   }
 
-  static Widget _buildNavButton(
-      IconData icon, String label, BuildContext context, Widget page) {
+  Widget _buildBottomNavBar(BuildContext context) {
+    return Container(
+      height: 100,
+      child: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavButton(Icons.home, "Home", context, const HomePage()),
+            _buildNavButton(Icons.search, "Search", context, const SearchPage()),
+            _buildNavButton(Icons.show_chart, "Graph", context, const GraphPage()),
+            _buildNavButton(Icons.medical_services, "Prescription", context, const PrescriptionPage()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildNavButton(IconData icon, String label, BuildContext context, Widget page) {
+    return GestureDetector(
+      onTap: () {
+        if (context.widget.runtimeType != page.runtimeType) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => page),
+            ModalRoute.withName('/'),
+          );
+        }
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 24,
+            backgroundColor: Colors.blue,
+            child: Icon(icon, color: Colors.white, size: 28),
+          ),
+          const SizedBox(height: 2),
+          Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+}
+
+class PrescriptionPage extends StatefulWidget {
+  const PrescriptionPage({Key? key}) : super(key: key);
+
+  @override
+  _PrescriptionPageState createState() => _PrescriptionPageState();
+}
+
+class _PrescriptionPageState extends State<PrescriptionPage> {
+  String _selectedFilter = "Default";
+  bool _showFilterOptions = false;
+  final List<String> _filters = ["Latest", "Earliest", "Default"];
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          ModalRoute.withName('/'),
+        );
+        return false;
+      },
+      child: Scaffold(
+        appBar: CustomTopBar(
+          onBackPress: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+              ModalRoute.withName('/'),
+            );
+          },
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  "Prescriptions",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _showFilterOptions = !_showFilterOptions;
+                        });
+                      },
+                      icon: const Icon(Icons.filter_list),
+                      label: const Text("Filter"),
+                    ),
+                    Text(_selectedFilter, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              if (_showFilterOptions)
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                  ),
+                  child: Column(
+                    children: _filters.map((filter) {
+                      return ListTile(
+                        title: Text(filter),
+                        onTap: () {
+                          setState(() {
+                            _selectedFilter = filter;
+                            _showFilterOptions = false;
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: 5, // Example count, replace with actual data
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text("Prescription Title", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          Text("Prescription details will appear here...", style: TextStyle(color: Colors.grey)),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        bottomNavigationBar: _buildBottomNavBar(context),
+        floatingActionButton: Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10, right: 20),
+            child: _buildChatBotButton(context),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomNavBar(BuildContext context) {
+    return Container(
+      height: 100,
+      child: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavButton(Icons.home, "Home", context, const HomePage()),
+            _buildNavButton(Icons.search, "Search", context, const SearchPage()),
+            _buildNavButton(Icons.show_chart, "Graph", context, const GraphPage()),
+            _buildNavButton(Icons.medical_services, "Prescription", context, const PrescriptionPage()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatBotButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ChatPage()),
+        );
+      },
+      backgroundColor: Colors.blue,
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/bot_icon.png',
+          height: 50,
+          width: 50,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavButton(IconData icon, String label, BuildContext context, Widget page) {
     return GestureDetector(
       onTap: () {
         if (context.widget.runtimeType != page.runtimeType) {
