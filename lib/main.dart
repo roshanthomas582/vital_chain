@@ -2295,7 +2295,10 @@ class _AppointmentPageState extends State<AppointmentPage> {
                         : focusedDay;
                   });
                 },
+                calendarFormat: CalendarFormat.month, // ✅ Set fixed month format
+                availableCalendarFormats: {CalendarFormat.month: 'Month'}, // ✅ Disable format toggle
               ),
+
 
               const SizedBox(height: 20),
 
