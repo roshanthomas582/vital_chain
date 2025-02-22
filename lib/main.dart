@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:io'; 
+import 'dart:io';
+
+import 'package:table_calendar/table_calendar.dart';
+
+
 
 
 
@@ -376,103 +380,117 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CommonScaffold(
-      appBar: const CustomTopBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: const Text(
-                  'Login',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // App Icon
-              Image.asset(
-                'web/icons/WhatsApp Image 2025-01-26 at 8.44.37 AM.jpeg',
-                width: 100,
-                height: 100,
-              ),
-              const SizedBox(height: 20),
-
-              // App Name
-              const Text(
-                'VITAL CHAIN',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2.0,
-                ),
-              ),
-              const SizedBox(height: 40),
-
-              // Email TextField
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  prefixIcon: const Icon(Icons.email),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Password TextField
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  prefixIcon: const Icon(Icons.lock),
-                ),
-              ),
-              const SizedBox(height: 30),
-
-              // Login Button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomePage()),
-                    );
-                  },
-
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LandingPage()),
+        );
+        return false; // Prevents default back action
+      },
+      child: CommonScaffold(
+        appBar: CustomTopBar(
+          onBackPress: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const LandingPage()),
+            );
+          },
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
                   child: const Text(
                     'Login',
-                    style: TextStyle(fontSize: 18),
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 20),
+
+                // App Icon
+                Image.asset(
+                  'web/icons/WhatsApp Image 2025-01-26 at 8.44.37 AM.jpeg',
+                  width: 100,
+                  height: 100,
+                ),
+                const SizedBox(height: 20),
+
+                // App Name
+                const Text(
+                  'VITAL CHAIN',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2.0,
+                  ),
+                ),
+                const SizedBox(height: 40),
+
+                // Email TextField
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    prefixIcon: const Icon(Icons.email),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Password TextField
+                TextField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    prefixIcon: const Icon(Icons.lock),
+                  ),
+                ),
+                const SizedBox(height: 30),
+
+                // Login Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
-
-
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -564,7 +582,6 @@ class RegisterPage extends StatelessWidget {
 }
 
 
-
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
 
@@ -591,16 +608,28 @@ class _ChatPageState extends State<ChatPage> {
 
       try {
         final response = await http.post(
-          Uri.parse("http://192.168.128.44:5000/chat"),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode({"message": userMessage}),
+          Uri.parse("https://api.groq.com/openai/v1/chat/completions"), // Direct API call to Groq API
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer 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", // Replace with your Groq API key
+          },
+          body: jsonEncode({
+            "messages": [{"role": "user", "content": userMessage}],
+            "model": "llama3-8b-8192", // Adjust model as needed
+          }),
         );
+
+        // Debugging: Check the status code and response body
+        print('Response Status: ${response.statusCode}');
+        print('Response Body: ${response.body}');
 
         if (response.statusCode == 200) {
           final responseData = jsonDecode(response.body);
+          print('Response Data: $responseData'); // Log the full response
 
+          final reply = responseData["choices"]?[0]["message"]["content"] ?? "No response from server";
           setState(() {
-            _messages.add({"role": "bot", "content": responseData["reply"] ?? "No response from server"});
+            _messages.add({"role": "bot", "content": reply});
           });
         } else {
           setState(() {
@@ -608,6 +637,7 @@ class _ChatPageState extends State<ChatPage> {
           });
         }
       } catch (error) {
+        print('Error: $error'); // Log the error
         setState(() {
           _messages.add({"role": "bot", "content": "Error connecting to server."});
         });
@@ -694,8 +724,6 @@ class _ChatPageState extends State<ChatPage> {
     super.dispose();
   }
 }
-
-
 class RegisterAsUserPage extends StatefulWidget {
   const RegisterAsUserPage({Key? key}) : super(key: key);
 
@@ -1541,6 +1569,9 @@ class EditingPage extends StatelessWidget {
     );
   }
 }
+
+
+
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -1602,6 +1633,22 @@ class HomePage extends StatelessWidget {
                       ],
                     ),
                   ),
+                  // 3x2 Grid of oval buttons with updated sizes
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Wrap(
+                      spacing: 16.0,
+                      runSpacing: 16.0,
+                      children: [
+                        _buildFeatureButton("Document", Icons.description, context),
+                        _buildFeatureButton("Medication", Icons.medication, context),
+                        _buildFeatureButton("Appointments", Icons.calendar_today, context),
+                        _buildFeatureButton("Lab Results", Icons.medical_services, context),
+                        _buildFeatureButton("Chronic Diseases", Icons.health_and_safety, context),
+                        _buildFeatureButton("Health Insurance", Icons.insights, context),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -1614,6 +1661,45 @@ class HomePage extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 10, right: 20),
             child: _buildChatBotButton(context),
           ),
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildFeatureButton(String label, IconData icon, BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        if (label == "Appointments") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AppointmentPage()),
+          );
+        } else {
+          print('$label tapped');
+        }
+      },
+      child: Container(
+        width: 140, // Increased width for round-rectangle shape
+        height: 80,  // Reduced height
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(30), // Smooth rounded edges
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.white, size: 32),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -1684,6 +1770,9 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
+
+
 class SearchPage extends StatelessWidget {
   const SearchPage({Key? key}) : super(key: key);
 
@@ -2146,6 +2235,102 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
           Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
         ],
       ),
+    );
+  }
+}
+
+class AppointmentPage extends StatefulWidget {
+  const AppointmentPage({Key? key}) : super(key: key);
+
+  @override
+  _AppointmentPageState createState() => _AppointmentPageState();
+}
+
+class _AppointmentPageState extends State<AppointmentPage> {
+  late Map<DateTime, List<String>> _appointments;
+  late DateTime _selectedDay;
+  late DateTime _focusedDay;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDay = DateTime.now();
+    _focusedDay = DateTime.now();
+    _appointments = {}; // ✅ Initialize appointments map
+
+    // Ensure _focusedDay does not exceed last allowed day
+    DateTime lastAllowedDay = DateTime(2025, 12, 31);
+    if (_focusedDay.isAfter(lastAllowedDay)) {
+      _focusedDay = lastAllowedDay;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CommonScaffold(
+      appBar: const CustomTopBar(), // ✅ Use Custom Top Bar
+      body: SingleChildScrollView( // ✅ Fix Overflow
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Appointments",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+
+              // ✅ Fixed Calendar Overflow Issue
+              TableCalendar(
+                firstDay: DateTime.utc(2020, 1, 1),
+                lastDay: DateTime.utc(2025, 12, 31),
+                focusedDay: _focusedDay,
+                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    _focusedDay = focusedDay.isAfter(DateTime(2025, 12, 31))
+                        ? DateTime(2025, 12, 31)
+                        : focusedDay;
+                  });
+                },
+              ),
+
+              const SizedBox(height: 20),
+
+              // ✅ Make Appointments List Scrollable to Avoid Overflow
+              _buildAppointmentsForDay(_selectedDay),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ✅ Helper function to display appointments
+  Widget _buildAppointmentsForDay(DateTime day) {
+    String formattedDate =
+        '${day.year}-${day.month.toString().padLeft(2, '0')}-${day.day.toString().padLeft(2, '0')}';
+    List<String> appointmentsForDay = _appointments[day] ?? [];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Appointments for $formattedDate:',
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        if (appointmentsForDay.isEmpty)
+          const Text('No appointments for this day.'),
+        ...appointmentsForDay.map(
+              (appointment) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: Text(appointment),
+          ),
+        ),
+      ],
     );
   }
 }
