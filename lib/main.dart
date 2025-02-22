@@ -1421,6 +1421,8 @@ class ProfilePage extends StatelessWidget {
     );
   }
 }
+
+
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -1447,29 +1449,82 @@ class SettingsPage extends StatelessWidget {
               ],
             ),
           ),
-          const Spacer(), // Pushes logout button to the bottom
+          const Spacer(), // Pushes buttons to the bottom
           Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context); // Close settings panel
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                minimumSize: const Size(double.infinity, 50), // Full width button
-              ),
-              child: const Text("Logout", style: TextStyle(color: Colors.white)),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text("Delete Account"),
+                          content: const Text(
+                              "Do you want to delete your account permanently?"),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context); // Close dialog
+                              },
+                              child: const Text("No"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context); // Close dialog
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LandingPage()),
+                                );
+                              },
+                              child: const Text("Yes"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: const Text(
+                    "Delete Account",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close settings panel
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    minimumSize: const Size(double.infinity, 50), // Full width button
+                  ),
+                  child:
+                  const Text("Logout", style: TextStyle(color: Colors.white)),
+                ),
+              ],
             ),
           ),
+          const SizedBox(height: 20),
         ],
       ),
     );
   }
 }
+
+
+
+
+
 
 
 
