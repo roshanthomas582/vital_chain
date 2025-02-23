@@ -346,7 +346,7 @@ class _LandingPageState extends State<LandingPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const RegisterPage()),
+                        MaterialPageRoute(builder: (context) => const  RegisterPage()),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -497,6 +497,8 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int role = 0; // Initialize role to 0
+
     return CommonScaffold(
       appBar: const CustomTopBar(),
       body: Padding(
@@ -526,6 +528,7 @@ class RegisterPage extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
+                        role = 1; // Set role as 1 for Doctor
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -552,6 +555,7 @@ class RegisterPage extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
+                        role = 0; // Set role as 0 for User
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -1625,8 +1629,6 @@ class EditingPage extends StatelessWidget {
   }
 }
 
-
-
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -1696,7 +1698,7 @@ class HomePage extends StatelessWidget {
                       runSpacing: 16.0,
                       children: [
                         _buildFeatureButton("Document", Icons.description, context),
-                        _buildFeatureButton("Medication", Icons.medication, context),
+                        _buildFeatureButton("BMI Calculator", Icons.calculate, context),
                         _buildFeatureButton("Appointments", Icons.calendar_today, context),
                         _buildFeatureButton("Lab Results", Icons.medical_services, context),
                         _buildFeatureButton("Chronic Diseases", Icons.health_and_safety, context),
@@ -1728,6 +1730,11 @@ class HomePage extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AppointmentPage()),
+          );
+        } else if (label == "BMI Calculator") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const BMICalculatorPage()),
           );
         } else {
           print('$label tapped');
@@ -2392,3 +2399,86 @@ class _AppointmentPageState extends State<AppointmentPage> {
     );
   }
 }
+
+
+
+
+
+class BMICalculatorPage extends StatefulWidget {
+  const BMICalculatorPage({Key? key}) : super(key: key);
+
+  @override
+  _BMICalculatorPageState createState() => _BMICalculatorPageState();
+}
+
+class _BMICalculatorPageState extends State<BMICalculatorPage> {
+  final TextEditingController _heightController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+  double? _bmi;
+
+  void _calculateBMI() {
+    final double? height = double.tryParse(_heightController.text);
+    final double? weight = double.tryParse(_weightController.text);
+
+    if (height != null && weight != null && height > 0) {
+      setState(() {
+        _bmi = weight / ((height / 100) * (height / 100));
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CommonScaffold(
+      appBar: const CustomTopBar(),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "BMI Calculator",
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: _heightController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: "Height (cm)",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: _weightController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: "Weight (kg)",
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _calculateBMI,
+                child: const Text("Calculate BMI"),
+              ),
+            ),
+            if (_bmi != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Text(
+                  "Your BMI: ${_bmi!.toStringAsFixed(2)}",
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
