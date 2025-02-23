@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:table_calendar/table_calendar.dart';
 
 
@@ -586,6 +586,7 @@ class RegisterPage extends StatelessWidget {
 }
 
 
+
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
 
@@ -598,6 +599,29 @@ class _ChatPageState extends State<ChatPage> {
   final List<Map<String, String>> _messages = [];
   bool _isLoading = false;
   final FocusNode _focusNode = FocusNode();
+  String _appGuideText = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAppGuide();
+  }
+
+  // Load the app guide from the assets file
+  Future<void> _loadAppGuide() async {
+    _appGuideText = await rootBundle.loadString('assets/app_guide.txt');
+  }
+
+  // Search for an answer in the app guide dataset
+  String _getAnswerFromDataset(String question) {
+    List<String> lines = _appGuideText.split("\n");
+    for (String line in lines) {
+      if (line.toLowerCase().contains(question.toLowerCase())) {
+        return line;
+      }
+    }
+    return "I'm not sure. You can check the app guide for details.";
+  }
 
   Future<void> _sendMessage() async {
     if (_controller.text.isNotEmpty) {
@@ -608,29 +632,34 @@ class _ChatPageState extends State<ChatPage> {
         _isLoading = true;
       });
 
-      _controller.clear(); // Clears input field after capturing the message
+      _controller.clear();
 
+      // First, check the app guide dataset for an answer
+      String guideResponse = _getAnswerFromDataset(userMessage);
+      if (guideResponse != "I'm not sure. You can check the app guide for details.") {
+        setState(() {
+          _messages.add({"role": "bot", "content": guideResponse});
+          _isLoading = false;
+        });
+        return;
+      }
+
+      // If no answer in dataset, call Groq API
       try {
         final response = await http.post(
-          Uri.parse("https://api.groq.com/openai/v1/chat/completions"), // Direct API call to Groq API
+          Uri.parse("https://api.groq.com/openai/v1/chat/completions"),
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer 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", // Replace with your Groq API key
+            "Authorization": "Bearer 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", // Replace with your API key
           },
           body: jsonEncode({
             "messages": [{"role": "user", "content": userMessage}],
-            "model": "llama3-8b-8192", // Adjust model as needed
+            "model": "llama3-8b-8192",
           }),
         );
 
-        // Debugging: Check the status code and response body
-        print('Response Status: ${response.statusCode}');
-        print('Response Body: ${response.body}');
-
         if (response.statusCode == 200) {
           final responseData = jsonDecode(response.body);
-          print('Response Data: $responseData'); // Log the full response
-
           final reply = responseData["choices"]?[0]["message"]["content"] ?? "No response from server";
           setState(() {
             _messages.add({"role": "bot", "content": reply});
@@ -641,7 +670,6 @@ class _ChatPageState extends State<ChatPage> {
           });
         }
       } catch (error) {
-        print('Error: $error'); // Log the error
         setState(() {
           _messages.add({"role": "bot", "content": "Error connecting to server."});
         });
@@ -656,7 +684,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(), // Dismiss keyboard when tapping outside
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
           title: const Text("VITAL CHAIN GUIDE"),
@@ -728,6 +756,8 @@ class _ChatPageState extends State<ChatPage> {
     super.dispose();
   }
 }
+
+
 class RegisterAsUserPage extends StatefulWidget {
   const RegisterAsUserPage({Key? key}) : super(key: key);
 
@@ -1629,6 +1659,7 @@ class EditingPage extends StatelessWidget {
   }
 }
 
+
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -1702,7 +1733,7 @@ class HomePage extends StatelessWidget {
                         _buildFeatureButton("Appointments", Icons.calendar_today, context),
                         _buildFeatureButton("Lab Results", Icons.medical_services, context),
                         _buildFeatureButton("Chronic Diseases", Icons.health_and_safety, context),
-                        _buildFeatureButton("Health Insurance", Icons.insights, context),
+                        _buildFeatureButton("My Medicine", Icons.medication, context),
                       ],
                     ),
                   ),
@@ -1735,6 +1766,11 @@ class HomePage extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const BMICalculatorPage()),
+          );
+        } else if (label == "My Medicine") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MyMedicinePage()),
           );
         } else {
           print('$label tapped');
@@ -1832,8 +1868,6 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
-
 
 class SearchPage extends StatelessWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -2482,3 +2516,168 @@ class _BMICalculatorPageState extends State<BMICalculatorPage> {
 }
 
 
+
+class MyMedicinePage extends StatefulWidget {
+  const MyMedicinePage({Key? key}) : super(key: key);
+
+  @override
+  _MyMedicinePageState createState() => _MyMedicinePageState();
+}
+
+class _MyMedicinePageState extends State<MyMedicinePage> {
+  final List<Map<String, String>> _medicines = [];
+
+  void _addMedicine() {
+    String medicineName = "";
+    String medicineTime = "";
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Add Medicine"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: const InputDecoration(labelText: "Medicine Name"),
+                onChanged: (value) {
+                  medicineName = value;
+                },
+              ),
+              TextField(
+                decoration: const InputDecoration(
+                    labelText: "Time to be Taken"),
+                onChanged: (value) {
+                  medicineTime = value;
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                if (medicineName.isNotEmpty && medicineTime.isNotEmpty) {
+                  setState(() {
+                    _medicines.add(
+                        {"name": medicineName, "time": medicineTime});
+                  });
+                }
+                Navigator.pop(context);
+              },
+              child: const Text("Add"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteMedicine(int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Delete Medicine"),
+          content: const Text("Do you want to delete this medicine?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("No"),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  _medicines.removeAt(index);
+                });
+                Navigator.pop(context);
+              },
+              child: const Text("Yes"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
+          child: CustomTopBar(
+            onBackPress: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  "My Medicine",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: _medicines.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      child: ListTile(
+                        title: Text(_medicines[index]["name"]!),
+                        subtitle: Text("Time: ${_medicines[index]["time"]}"),
+                        onTap: () => _deleteMedicine(index),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 60, bottom: 10),
+            child: FloatingActionButton(
+              onPressed: _addMedicine,
+              backgroundColor: Colors.blue,
+              child: const Icon(Icons.add),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 40, bottom: 10),
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ChatPage()),
+                );
+              },
+              backgroundColor: Colors.blue,
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/images/bot_icon.png',
+                  height: 50,
+                  width: 50,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
