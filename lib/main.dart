@@ -380,6 +380,8 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int role = 0; // Change this dynamically based on your logic
+
     return WillPopScope(
       onWillPop: () async {
         Navigator.pushReplacement(
@@ -415,16 +417,12 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                // App Icon
                 Image.asset(
                   'web/icons/WhatsApp Image 2025-01-26 at 8.44.37 AM.jpeg',
                   width: 100,
                   height: 100,
                 ),
                 const SizedBox(height: 20),
-
-                // App Name
                 const Text(
                   'VITAL CHAIN',
                   style: TextStyle(
@@ -434,8 +432,6 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 40),
-
-                // Email TextField
                 TextField(
                   decoration: InputDecoration(
                     labelText: 'Email',
@@ -446,8 +442,6 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                // Password TextField
                 TextField(
                   obscureText: true,
                   decoration: InputDecoration(
@@ -459,17 +453,21 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 30),
-
-                // Login Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomePage()),
-                      );
+                      if (role == 0) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HomePage()),
+                        );
+                      } else if (role == 1) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Home2Page()),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -491,7 +489,6 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
-
 class RegisterPage extends StatelessWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
@@ -1483,6 +1480,7 @@ class SettingsPage extends StatelessWidget {
               ],
             ),
           ),
+
           const Spacer(), // Pushes buttons to the bottom
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -1577,6 +1575,10 @@ class EditingPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const Text(
+                "Edit Profile",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
               // Profile Picture Section
               Center(
                 child: Column(
@@ -1598,10 +1600,7 @@ class EditingPage extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Edit Profile Section
-              const Text(
-                "Edit Profile",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
+
               const SizedBox(height: 20),
 
               // Profile fields
@@ -1621,7 +1620,10 @@ class EditingPage extends StatelessWidget {
                 decoration: const InputDecoration(labelText: "Height"),
               ),
               const SizedBox(height: 20),
-
+              TextFormField(
+                decoration: const InputDecoration(labelText: "User Condition"),
+              ),
+              const SizedBox(height: 10),
               // Save Button
               Center(
                 child: ElevatedButton(
@@ -2677,6 +2679,654 @@ class _MyMedicinePageState extends State<MyMedicinePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+
+
+class Home2Page extends StatelessWidget {
+  const Home2Page({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        if (Platform.isAndroid || Platform.isIOS) {
+          exit(0);
+        }
+        return false;
+      },
+      child: Scaffold(
+        appBar: CustomTopBar(
+          onBackPress: () {
+            if (Platform.isAndroid || Platform.isIOS) {
+              exit(0);
+            }
+          },
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 96),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Home Page",
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const Profile2Page()),
+                            );
+                          },
+                          child: const CircleAvatar(
+                            radius: 25,
+                            backgroundImage: AssetImage('assets/images/profile_icon.png'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: const [
+                        Text("Tap the profile icon to go to Profile Page"),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        bottomNavigationBar: _buildBottomNavBar(context),
+        floatingActionButton: Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10, right: 20),
+            child: _buildChatBotButton(context),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatBotButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ChatPage()),
+        );
+      },
+      backgroundColor: Colors.blue,
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/bot_icon.png',
+          height: 50,
+          width: 50,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomNavBar(BuildContext context) {
+    return Container(
+      height: 100,
+      child: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavButton(Icons.home, "Home", context, const Home2Page()),
+            _buildNavButton(Icons.search, "Search", context, const Search2Page()),
+            _buildNavButton(Icons.show_chart, "Graph", context, const Graph2Page()),
+            _buildNavButton(Icons.medical_services, "Prescription", context, const PrescriptionPage()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildNavButton(IconData icon, String label, BuildContext context, Widget page) {
+    return GestureDetector(
+      onTap: () {
+        if (context.widget.runtimeType != page.runtimeType) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => page),
+            ModalRoute.withName('/'),
+          );
+        }
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 24,
+            backgroundColor: Colors.blue,
+            child: Icon(icon, color: Colors.white, size: 28),
+          ),
+          const SizedBox(height: 2),
+          Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+}
+class Search2Page extends StatelessWidget {
+  const Search2Page({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const Home2Page()),
+          ModalRoute.withName('/'),
+        );
+        return false;
+      },
+      child: Scaffold(
+        appBar: CustomTopBar(
+          onBackPress: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const Home2Page()),
+              ModalRoute.withName('/'),
+            );
+          },
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    "Search",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: "Search...",
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.shade200,
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    "Search results will appear here...",
+                    style: TextStyle(color: Colors.grey.shade600),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        bottomNavigationBar: _buildBottomNavBar(context),
+        floatingActionButton: Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10, right: 20),
+            child: _buildChatBotButton(context),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatBotButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ChatPage()),
+        );
+      },
+      backgroundColor: Colors.blue,
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/bot_icon.png',
+          height: 50,
+          width: 50,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomNavBar(BuildContext context) {
+    return Container(
+      height: 100,
+      child: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavButton(Icons.home, "Home", context, const Home2Page()),
+            _buildNavButton(Icons.search, "Search", context, const Search2Page()),
+            _buildNavButton(Icons.show_chart, "Graph", context, const Graph2Page()),
+            _buildNavButton(Icons.medical_services, "Prescription", context, const PrescriptionPage()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildNavButton(IconData icon, String label, BuildContext context, Widget page) {
+    return GestureDetector(
+      onTap: () {
+        if (context.widget.runtimeType != page.runtimeType) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => page),
+            ModalRoute.withName('/'),
+          );
+        }
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 24,
+            backgroundColor: Colors.blue,
+            child: Icon(icon, color: Colors.white, size: 28),
+          ),
+          const SizedBox(height: 2),
+          Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+}
+
+class Graph2Page extends StatelessWidget {
+  const Graph2Page({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const Home2Page()),
+          ModalRoute.withName('/'),
+        );
+        return false;
+      },
+      child: Scaffold(
+        appBar: CustomTopBar(
+          onBackPress: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const Home2Page()),
+              ModalRoute.withName('/'),
+            );
+          },
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  "Graph Data",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: Container(
+                    height: 300,
+                    width: double.infinity,
+                    margin: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade400),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        "Graph will be displayed here...",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        bottomNavigationBar: _buildBottomNavBar(context),
+        floatingActionButton: Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10, right: 20),
+            child: _buildChatBotButton(context),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatBotButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ChatPage()),
+        );
+      },
+      backgroundColor: Colors.blue,
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/bot_icon.png',
+          height: 50,
+          width: 50,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomNavBar(BuildContext context) {
+    return Container(
+      height: 100,
+      child: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildNavButton(Icons.home, "Home", context, const Home2Page()),
+            _buildNavButton(Icons.search, "Search", context, const Search2Page()),
+            _buildNavButton(Icons.show_chart, "Graph", context, const Graph2Page()),
+            _buildNavButton(Icons.medical_services, "Prescription", context, const PrescriptionPage()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildNavButton(IconData icon, String label, BuildContext context, Widget page) {
+    return GestureDetector(
+      onTap: () {
+        if (context.widget.runtimeType != page.runtimeType) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => page),
+            ModalRoute.withName('/'),
+          );
+        }
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 24,
+            backgroundColor: Colors.blue,
+            child: Icon(icon, color: Colors.white, size: 28),
+          ),
+          const SizedBox(height: 2),
+          Text(label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+}
+
+class Profile2Page extends StatelessWidget {
+  const Profile2Page({Key? key}) : super(key: key);
+
+  void _showSettings(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: "Settings",
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, anim1, anim2) {
+        return Align(
+          alignment: Alignment.centerRight,
+          child: FractionallySizedBox(
+            widthFactor: 0.5,
+            heightFactor: 1.0,
+            child: SettingsPage(),
+          ),
+        );
+      },
+      transitionBuilder: (context, anim1, anim2, child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(1, 0),
+            end: Offset.zero,
+          ).animate(anim1),
+          child: child,
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CommonScaffold(
+      appBar: const CustomTopBar(),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, top: 16.0),
+              child: const Text(
+                'Profile',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            Center(
+              child: Column(
+                children: [
+                  const CircleAvatar(
+                    radius: 50,
+                    backgroundImage: AssetImage('assets/profile_pic.png'),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text('NAME', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 5),
+                  const Text('Specialized in:', style: TextStyle(fontSize: 16, color: Colors.grey)),
+                  const SizedBox(height: 20),
+
+                  // Buttons with equal sizes
+                  SizedBox(
+                    width: 250,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child:ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const Editing2Page()),
+                              );
+                            },
+                            child: const Text('Edit Profile'),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () => _showSettings(context),
+                            child: const Text('Settings'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Patient Details Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Doctor Details', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  const Text('Age: ', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  const Text('Hospital: ', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  const Text('Educational Qualification : ', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  const Text('Gender:', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+
+                  const Text('Work History', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  const Text('', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  const Text('', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 20),
+
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Editing2Page extends StatelessWidget {
+  const Editing2Page({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const CustomTopBar(), // Custom top bar
+      resizeToAvoidBottomInset: true, // Ensures content resizes when keyboard appears
+      body: SingleChildScrollView( // Wrap the content in a scrollable view
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Edit Profile",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              // Profile Picture Section
+              Center(
+                child: Column(
+                  children: [
+                    const CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage('assets/profile_pic.png'), // Placeholder for profile pic
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Handle edit profile picture action
+                      },
+                      child: const Text("Edit Profile Picture"),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Edit Profile Section
+
+              const SizedBox(height: 20),
+
+              // Profile fields
+              TextFormField(
+                decoration: const InputDecoration(labelText: "Name"),
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                decoration: const InputDecoration(labelText: "Age"),
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                decoration: const InputDecoration(labelText: "Hospital"),
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                decoration: const InputDecoration(labelText: "Educational Qualification"),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                decoration: const InputDecoration(labelText: "Work History"),
+              ),
+              const SizedBox(height: 10),
+              // Save Button
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Go back to Profile Page
+                  },
+                  child: const Text("Save Changes"),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+
+      // Chatbot Floating Action Button
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigate to chat page
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ChatPage()),
+          );
+        },
+        backgroundColor: Colors.blue,
+        child: ClipOval(
+          child: Image.asset(
+            'assets/images/bot_icon.png', // Assuming this is your chatbot icon
+            height: 50,
+            width: 50,
+            fit: BoxFit.cover,
+          ),
+        ),
       ),
     );
   }
