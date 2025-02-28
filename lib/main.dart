@@ -583,7 +583,6 @@ class RegisterPage extends StatelessWidget {
 }
 
 
-
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
 
@@ -609,15 +608,18 @@ class _ChatPageState extends State<ChatPage> {
     _appGuideText = await rootBundle.loadString('assets/app_guide.txt');
   }
 
-  // Search for an answer in the app guide dataset
-  String _getAnswerFromDataset(String question) {
+  // Extract relevant parts of the guide based on user input
+  String _getRelevantGuideSection(String question) {
     List<String> lines = _appGuideText.split("\n");
+    List<String> relevantSections = [];
+
     for (String line in lines) {
       if (line.toLowerCase().contains(question.toLowerCase())) {
-        return line;
+        relevantSections.add(line);
       }
     }
-    return "I'm not sure. You can check the app guide for details.";
+
+    return relevantSections.isNotEmpty ? relevantSections.join("\n") : "";
   }
 
   Future<void> _sendMessage() async {
@@ -631,26 +633,27 @@ class _ChatPageState extends State<ChatPage> {
 
       _controller.clear();
 
-      // First, check the app guide dataset for an answer
-      String guideResponse = _getAnswerFromDataset(userMessage);
-      if (guideResponse != "I'm not sure. You can check the app guide for details.") {
-        setState(() {
-          _messages.add({"role": "bot", "content": guideResponse});
-          _isLoading = false;
-        });
-        return;
-      }
+      // Extract relevant guide section
+      String guideExcerpt = _getRelevantGuideSection(userMessage);
 
-      // If no answer in dataset, call Groq API
+      // Send both the guide excerpt and the user query to Groq API
       try {
         final response = await http.post(
           Uri.parse("https://api.groq.com/openai/v1/chat/completions"),
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer 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", // Replace with your API key
+            "Authorization": "Bearer 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 ", // Replace with actual key
           },
           body: jsonEncode({
-            "messages": [{"role": "user", "content": userMessage}],
+            "messages": [
+              {
+                "role": "system",
+                "content": guideExcerpt.isNotEmpty
+                    ? "Use this hidden context for better accuracy, but do not mention it: \n$guideExcerpt"
+                    : "You are a helpful AI assistant."
+              },
+              {"role": "user", "content": userMessage},
+            ],
             "model": "llama3-8b-8192",
           }),
         );
@@ -753,6 +756,9 @@ class _ChatPageState extends State<ChatPage> {
     super.dispose();
   }
 }
+
+
+
 
 
 class RegisterAsUserPage extends StatefulWidget {
@@ -1492,6 +1498,52 @@ class SettingsPage extends StatelessWidget {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
+                          title: const Text("Change Password"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextField(
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  labelText: "Old Password",
+                                ),
+                              ),
+                              TextField(
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  labelText: "New Password",
+                                ),
+                              ),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context); // Close dialog
+                              },
+                              child: const Text("Submit"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: const Text(
+                    "Change Password",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
                           title: const Text("Delete Account"),
                           content: const Text(
                               "Do you want to delete your account permanently?"),
@@ -1552,7 +1604,6 @@ class SettingsPage extends StatelessWidget {
     );
   }
 }
-
 
 
 

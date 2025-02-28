@@ -1,34 +1,119 @@
-Vital Chain
+Vital Chain App - Comprehensive Guide
+1. Overview of Vital Chain
+Vital Chain is a health management app that provides a secure and efficient way for users to store, manage, and share their medical records. The app enhances patient-doctor interactions by implementing a consent-based data-sharing model, ensuring that no health records are accessed without user approval.
 
-1. Overview
-Vital Chain is a health management app that allows users to securely store and share medical records, manage appointments, track health metrics, and access lab results. The app is designed to enhance patient-doctor interactions through a consent-based data-sharing model.
+Key Features of Vital Chain:
+Secure Medical Record Storage: Upload and manage personal health documents.
+Appointment Scheduling: Book and track doctor visits efficiently.
+Health Metrics Tracking: Monitor key health parameters, including BMI.
+Lab Results Access: View and store medical test reports.
+Chronic Disease Management: Track ongoing conditions for better healthcare monitoring.
+Digital Prescriptions: Store and access prescriptions easily.
+Consent-Based Record Sharing: Share health records only with user consent.
+Integrated Chatbot: Get assistance regarding app features and navigation.
+2. Home Page Overview
+The Vital Chain Home Page provides quick access to all essential features:
 
-2. Home Page
-The Home Page provides quick access to key features:
-Profile Icon: Tap to navigate to your profile.
-BMI Calculator: Use this tool to calculate your Body Mass Index.
-Appointments: View and manage your scheduled doctor visits.
-Lab Results: Access medical test reports.
-Chronic Diseases: Track and manage chronic conditions.
-Health Insurance: Store and access insurance-related information.
-Search Bar: Quickly find medical records, doctors, or other app features.
-Graph Section: Visual representation of health trends over time.
-Prescription Section: View and store digital prescriptions.
+Main Features on the Home Page:
+Profile Icon – Tap to view and update user profile details.
+BMI Calculator – Quickly calculate and analyze Body Mass Index.
+Appointments – View, book, and manage scheduled doctor visits.
+Lab Results – Access medical test reports in a secure manner.
+Chronic Diseases – Track and manage chronic health conditions.
+Health Insurance – Store and retrieve insurance-related documents.
+Search Bar – Quickly find medical records, doctors, or app features.
+Graph Section – View a graphical representation of health trends over time.
+Prescription Section – Store, access, and manage digital prescriptions.
 3. Consent-Based Record Sharing
-Users can securely share their health records with a doctor or medical facility only after providing explicit consent.
-The consent system ensures that no data is shared without user approval.
-4. Chatbot & Messaging
-The app features an integrated chatbot that allows users to:
-Ask questions about app features.
-Get guidance on navigating the platform.
-Request help regarding document uploads and sharing.
-The chat interface includes a message input field and options for quick responses.
-5. Navigation & Icons
-Home Button: Takes you back to the main dashboard.
-Search Icon: Enables quick search within the app.
-Graph Icon: Displays health metrics in graphical form.
-Prescription Icon: Directly accesses stored prescriptions.
+The Vital Chain app ensures secure health data sharing through an explicit user-consent system:
+
+Users must provide explicit consent before sharing medical records with doctors or healthcare facilities.
+The consent system safeguards privacy, ensuring no unauthorized access to health data.
+4. Chatbot & Messaging in Vital Chain
+The app includes a smart chatbot that assists users with:
+
+App Navigation Guidance – Learn how to use features efficiently.
+Document Upload & Sharing Help – Get instructions on securely managing medical records.
+General Queries about the App – Ask questions related to Vital Chain functionalities.
+💬 The chatbot interface includes a message input field and quick response options for seamless interaction.
+
+5. App Navigation & Icons
+Vital Chain ensures a user-friendly experience with intuitive navigation icons:
+
+🏠 Home Button – Return to the main dashboard.
+🔍 Search Icon – Quickly search for records, doctors, or app features.
+📊 Graph Icon – View health metrics in a visual format.
+📜 Prescription Icon – Access stored prescriptions instantly.
 6. Additional Features
-Document Upload: Users can upload medical documents for secure storage.
-Health Metrics Tracking: Includes BMI and other important statistics.
-Appointment Scheduling: Book and manage visits with healthcare providers.
+📂 Document Upload
+Users can upload and securely store medical records and prescriptions.
+📊 Health Metrics Tracking
+Includes BMI calculations and other essential health statistics.
+📅 Appointment Scheduling
+Book and manage doctor visits effortlessly.
+User Registration on Vital Chain
+How to Register as a Patient (User)
+Open the Vital Chain app.
+Navigate to the Registration Page.
+Select "Register as User".
+Fill out the required details:
+Name, Age, Gender
+Address, Phone Number, Email ID
+Create a strong password
+Tap Submit to complete the registration.
+Upon successful registration, a confirmation message will be received.
+Log in and start using Vital Chain.
+How to Register as a Doctor on Vital Chain
+Doctors must complete additional verification steps during registration:
+
+Open the Vital Chain app.
+Go to the Registration Page.
+Select "Register as Doctor".
+Enter standard details:
+Name, Age, Gender, Address, Phone Number, Email ID
+Provide professional credentials:
+Doctor’s License Number
+Hospital Name
+Department
+Set a strong password for security.
+Tap Submit to complete registration.
+Upon verification, receive confirmation to access doctor-specific features.
+Using the "My Medicine" Section
+How to Add a New Medicine Reminder
+Navigate to "My Medicine" from the main screen.
+Tap the "+" (plus) button to add a new medicine.
+Enter:
+Medicine Name
+Scheduled Time(s) (e.g., "8 AM, 8 PM")
+Tap "Add" to save or "Cancel" to discard.
+How to View & Manage Medicines
+Added medicines appear as a list under "My Medicine" with names & times.
+Edit or Remove Medicine:
+Tap the medicine entry to modify details (if an edit option exists).
+Long-press or swipe to delete a medicine (if a remove option is available).
+📌 This feature helps users track their medications and avoid missed doses.
+
+Managing Appointments in Vital Chain
+How to Mark an Appointment
+Navigate to the Appointments section.
+Select a date from the calendar.
+Tap "Add Appointment" or the "+" button.
+Enter:
+Time of Appointment
+Doctor's Name
+Purpose
+Location (if needed)
+Tap Save to confirm.
+The appointment will now be displayed on the selected date.
+Using the BMI Calculator in Vital Chain
+How to Calculate BMI
+Go to the BMI Calculator section.
+Enter:
+Height (in cm)
+Weight (in kg)
+Tap "Calculate BMI".
+The app will display:
+BMI Value
+Health Category (e.g., Underweight, Normal, Overweight, Obese)
+📌 This feature helps users track their weight health and make informed decisions.
+
