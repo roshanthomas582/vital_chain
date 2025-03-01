@@ -380,7 +380,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int role = 0; // Change this dynamically based on your logic
+    int role = 1; // Change this dynamically based on your logic
 
     return WillPopScope(
       onWillPop: () async {
@@ -1925,6 +1925,7 @@ class HomePage extends StatelessWidget {
 class SearchPage extends StatelessWidget {
   const SearchPage({Key? key}) : super(key: key);
 
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -1970,6 +1971,14 @@ class SearchPage extends StatelessWidget {
                       filled: true,
                       fillColor: Colors.grey.shade200,
                     ),
+                    onSubmitted: (value) {
+                      if (value.isNotEmpty) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ViewProfile2Page()),
+                        );
+                      }
+                    },
                   ),
                 ),
                 Center(
@@ -2928,6 +2937,14 @@ class Search2Page extends StatelessWidget {
                       filled: true,
                       fillColor: Colors.grey.shade200,
                     ),
+                    onSubmitted: (value) {
+                      if (value.isNotEmpty) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ViewProfilePage()),
+                        );
+                      }
+                    },
                   ),
                 ),
                 Center(
@@ -3378,6 +3395,466 @@ class Editing2Page extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
+      ),
+    );
+  }
+}
+
+
+class ViewProfilePage extends StatefulWidget {
+  const ViewProfilePage({Key? key}) : super(key: key);
+
+  @override
+  _ViewProfilePageState createState() => _ViewProfilePageState();
+}
+
+class _ViewProfilePageState extends State<ViewProfilePage> {
+  bool isRequestPressed = false;
+  final Color buttonTextColor = Color(0xFF6A5ACD); // Violet-like color for all buttons
+
+  void _showPopup(BuildContext context, String title) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                // Implement file download functionality here
+              },
+              child: const Text('Download File'),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              decoration: const InputDecoration(
+                hintText: 'Downloaded file ',
+                border: OutlineInputBorder(),
+              ),
+              readOnly: true,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CommonScaffold(
+      appBar: const CustomTopBar(),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, top: 16.0),
+              child: const Text(
+                'Profile',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Center(
+              child: Column(
+                children: [
+                  const CircleAvatar(
+                    radius: 50,
+                    backgroundImage: AssetImage('assets/profile_pic.png'),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text('NAME', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 5),
+
+
+                  // 2x2 Button Grid
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 140,
+                            child: ElevatedButton(
+                              onPressed: () => _showPopup(context, 'Add Prescription'),
+                              child: Text(
+                                'Prescription',
+                                style: TextStyle(color: buttonTextColor),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          SizedBox(
+                            width: 140,
+                            child: ElevatedButton(
+                              onPressed: () => _showPopup(context, 'Add lab Result'),
+                              child: Text(
+                                'Lab Result',
+                                style: TextStyle(color: buttonTextColor),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 140,
+                            child: ElevatedButton(
+                              onPressed: () => _showPopup(context, 'Add Document'),
+                              child: Text(
+                                'Document',
+                                style: TextStyle(color: buttonTextColor),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          SizedBox(
+                            width: 140,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  isRequestPressed = !isRequestPressed;
+                                });
+                              },
+                              child: Text(
+                                'Request',
+                                style: TextStyle(
+                                  color: isRequestPressed ? Colors.blue : buttonTextColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Patient Details Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text('Patient Details', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 10),
+                  Text('Age: ', style: TextStyle(fontSize: 16)),
+                  SizedBox(height: 8),
+                  Text('Weight: ', style: TextStyle(fontSize: 16)),
+                  SizedBox(height: 8),
+                  Text('Height: ', style: TextStyle(fontSize: 16)),
+                  SizedBox(height: 8),
+                  Text('Gender:', style: TextStyle(fontSize: 16)),
+                  SizedBox(height: 8),
+                  Text('User Condition: ', style: TextStyle(fontSize: 16)),
+                  SizedBox(height: 20),
+                  Text('Allergies', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 8),
+                  Text('', style: TextStyle(fontSize: 16)),
+                  SizedBox(height: 8),
+                  Text('', style: TextStyle(fontSize: 16)),
+                  SizedBox(height: 20),
+                  Text('Medical History', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 8),
+                  Text('', style: TextStyle(fontSize: 16)),
+                  SizedBox(height: 8),
+                  Text('', style: TextStyle(fontSize: 16)),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+class ViewProfile2Page extends StatefulWidget {
+  const ViewProfile2Page({Key? key}) : super(key: key);
+
+  @override
+  _ViewProfile2PageState createState() => _ViewProfile2PageState();
+}
+
+class _ViewProfile2PageState extends State<ViewProfile2Page> {
+  bool isAppointmentRequested = false;
+
+  void _toggleAppointmentRequest() {
+    setState(() {
+      isAppointmentRequested = !isAppointmentRequested;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CommonScaffold(
+      appBar: const CustomTopBar(),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, top: 16.0),
+              child: const Text(
+                'Profile',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Center(
+              child: Column(
+                children: [
+                  const CircleAvatar(
+                    radius: 50,
+                    backgroundImage: AssetImage('assets/profile_pic.png'),
+                  ),
+                  const SizedBox(height: 10),
+                  const Text('NAME', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 5),
+                  const Text('Specialized in:', style: TextStyle(fontSize: 16, color: Colors.grey)),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: 290, // Increased width to accommodate 2 more letters
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: _toggleAppointmentRequest,
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: isAppointmentRequested ? Colors.blue : Colors.purple, // Toggle text color
+                              backgroundColor: Colors.white, // Button background in white
+                            ),
+                            child: Text('Appointment Request'),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const ReviewPage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.purple, // Text color in violet
+                              backgroundColor: Colors.white, // Button background in white
+                            ),
+                            child: const Text('Reviews'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Doctor Details', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  const Text('Age: ', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  const Text('Hospital: ', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  const Text('Educational Qualification : ', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  const Text('Gender:', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  const Text('Work History', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  const Text('', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 8),
+                  const Text('', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+class ReviewPage extends StatefulWidget {
+  const ReviewPage({Key? key}) : super(key: key);
+
+  @override
+  _ReviewPageState createState() => _ReviewPageState();
+}
+
+class _ReviewPageState extends State<ReviewPage> {
+  final List<Map<String, String>> _reviews = [];
+
+  void _addReview() {
+    String reviewerName = "";
+    String reviewText = "";
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Add Review"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: const InputDecoration(labelText: "Your Name"),
+                onChanged: (value) {
+                  reviewerName = value;
+                },
+              ),
+              TextField(
+                decoration: const InputDecoration(labelText: "Your Review"),
+                onChanged: (value) {
+                  reviewText = value;
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                if (reviewerName.isNotEmpty && reviewText.isNotEmpty) {
+                  setState(() {
+                    _reviews.add({"name": reviewerName, "review": reviewText});
+                  });
+                }
+                Navigator.pop(context);
+              },
+              child: const Text("Add"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deleteReview(int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Delete Review"),
+          content: const Text("Do you want to delete this review?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("No"),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  _reviews.removeAt(index);
+                });
+                Navigator.pop(context);
+              },
+              child: const Text("Yes"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: CustomTopBar(
+          onBackPress: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                "User Reviews",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: _reviews.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: ListTile(
+                      title: Text(_reviews[index]["name"]!),
+                      subtitle: Text("Review: ${_reviews[index]["review"]}"),
+                      onTap: () => _deleteReview(index),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 60, bottom: 10),
+            child: FloatingActionButton(
+              onPressed: _addReview,
+              backgroundColor: Colors.blue,
+              child: const Icon(Icons.add),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 40, bottom: 10),
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ChatPage()),
+                );
+              },
+              backgroundColor: Colors.blue,
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/images/bot_icon.png',
+                  height: 50,
+                  width: 50,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

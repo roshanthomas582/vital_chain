@@ -1,8 +1,8 @@
-Vital Chain App - Comprehensive Guide
-1. Overview of Vital Chain
-Vital Chain is a health management app that provides a secure and efficient way for users to store, manage, and share their medical records. The app enhances patient-doctor interactions by implementing a consent-based data-sharing model, ensuring that no health records are accessed without user approval.
-
-Key Features of Vital Chain:
+Vital Chain App
+1.  Vital Chain
+{Vital Chain is a health management app that provides a secure and efficient way for users to store, manage, and share their medical records. The app enhances patient-doctor interactions by implementing a consent-based data-sharing model, ensuring that no health records are accessed without user approval.
+}
+Key Features of Vital Chain:{
 Secure Medical Record Storage: Upload and manage personal health documents.
 Appointment Scheduling: Book and track doctor visits efficiently.
 Health Metrics Tracking: Monitor key health parameters, including BMI.
@@ -10,11 +10,11 @@ Lab Results Access: View and store medical test reports.
 Chronic Disease Management: Track ongoing conditions for better healthcare monitoring.
 Digital Prescriptions: Store and access prescriptions easily.
 Consent-Based Record Sharing: Share health records only with user consent.
-Integrated Chatbot: Get assistance regarding app features and navigation.
-2. Home Page Overview
+Integrated Chatbot: Get assistance regarding app features and navigation.}
+2. Home Page
 The Vital Chain Home Page provides quick access to all essential features:
 
-Main Features on the Home Page:
+Main Features of the Home Page:{
 Profile Icon – Tap to view and update user profile details.
 BMI Calculator – Quickly calculate and analyze Body Mass Index.
 Appointments – View, book, and manage scheduled doctor visits.
@@ -23,10 +23,10 @@ Chronic Diseases – Track and manage chronic health conditions.
 Health Insurance – Store and retrieve insurance-related documents.
 Search Bar – Quickly find medical records, doctors, or app features.
 Graph Section – View a graphical representation of health trends over time.
-Prescription Section – Store, access, and manage digital prescriptions.
-3. Consent-Based Record Sharing
-The Vital Chain app ensures secure health data sharing through an explicit user-consent system:
-
+Prescription Section – Store, access, and manage digital prescriptions.}
+3. Consent Based Record Sharing
+{The Vital Chain app ensures secure health data sharing through an explicit user-consent system:
+}
 Users must provide explicit consent before sharing medical records with doctors or healthcare facilities.
 The consent system safeguards privacy, ensuring no unauthorized access to health data.
 4. Chatbot & Messaging in Vital Chain
