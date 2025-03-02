@@ -1810,7 +1810,12 @@ class HomePage extends StatelessWidget {
   static Widget _buildFeatureButton(String label, IconData icon, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (label == "Appointments") {
+        if (label == "Document") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const DocumentPage()),
+          );
+        } else if (label == "Appointments") {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AppointmentPage()),
@@ -1825,16 +1830,21 @@ class HomePage extends StatelessWidget {
             context,
             MaterialPageRoute(builder: (context) => const MyMedicinePage()),
           );
+        } else if (label == "Lab Results") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LabResultsPage()),
+          );
         } else {
           print('$label tapped');
         }
       },
       child: Container(
-        width: 140, // Increased width for round-rectangle shape
-        height: 80,  // Reduced height
+        width: 140,
+        height: 80,
         decoration: BoxDecoration(
           color: Colors.blue,
-          borderRadius: BorderRadius.circular(30), // Smooth rounded edges
+          borderRadius: BorderRadius.circular(30),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -1877,7 +1887,7 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildBottomNavBar(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 100,
       child: BottomAppBar(
         shape: const CircularNotchedRectangle(),
@@ -2743,6 +2753,293 @@ class _MyMedicinePageState extends State<MyMedicinePage> {
     );
   }
 }
+class LabResultsPage extends StatefulWidget {
+  const LabResultsPage({Key? key}) : super(key: key);
+
+  @override
+  _LabResultsPageState createState() => _LabResultsPageState();
+}
+
+class _LabResultsPageState extends State<LabResultsPage> {
+  String _selectedFilter = "Default";
+  bool _showFilterOptions = false;
+  final List<String> _filters = ["Latest", "Earliest", "Default"];
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          ModalRoute.withName('/'),
+        );
+        return false;
+      },
+      child: Scaffold(
+        appBar: CustomTopBar(
+          onBackPress: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+              ModalRoute.withName('/'),
+            );
+          },
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  "Lab Results",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _showFilterOptions = !_showFilterOptions;
+                        });
+                      },
+                      icon: const Icon(Icons.filter_list),
+                      label: const Text("Filter"),
+                    ),
+                    Text(_selectedFilter, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              if (_showFilterOptions)
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                  ),
+                  child: Column(
+                    children: _filters.map((filter) {
+                      return ListTile(
+                        title: Text(filter),
+                        onTap: () {
+                          setState(() {
+                            _selectedFilter = filter;
+                            _showFilterOptions = false;
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: 5, // Example count, replace with actual data
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text("Lab Result Title", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          Text("Lab result details will appear here...", style: TextStyle(color: Colors.grey)),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10, right: 20),
+            child: _buildChatBotButton(context),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatBotButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ChatPage()),
+        );
+      },
+      backgroundColor: Colors.blue,
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/bot_icon.png',
+          height: 50,
+          width: 50,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+}
+
+class DocumentPage extends StatefulWidget {
+  const DocumentPage({Key? key}) : super(key: key);
+
+  @override
+  _DocumentPageState createState() => _DocumentPageState();
+}
+
+class _DocumentPageState extends State<DocumentPage> {
+  String _selectedFilter = "Default";
+  bool _showFilterOptions = false;
+  final List<String> _filters = ["Latest", "Earliest", "Default"];
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          ModalRoute.withName('/'),
+        );
+        return false;
+      },
+      child: Scaffold(
+        appBar: CustomTopBar(
+          onBackPress: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePage()),
+              ModalRoute.withName('/'),
+            );
+          },
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  "Documents",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _showFilterOptions = !_showFilterOptions;
+                        });
+                      },
+                      icon: const Icon(Icons.filter_list),
+                      label: const Text("Filter"),
+                    ),
+                    Text(_selectedFilter, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              if (_showFilterOptions)
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                  ),
+                  child: Column(
+                    children: _filters.map((filter) {
+                      return ListTile(
+                        title: Text(filter),
+                        onTap: () {
+                          setState(() {
+                            _selectedFilter = filter;
+                            _showFilterOptions = false;
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: 5, // Example count, replace with actual data
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text("Document Title", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          Text("Document details will appear here...", style: TextStyle(color: Colors.grey)),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10, right: 20),
+            child: _buildChatBotButton(context),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatBotButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ChatPage()),
+        );
+      },
+      backgroundColor: Colors.blue,
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/bot_icon.png',
+          height: 50,
+          width: 50,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+}
 
 
 
@@ -2807,6 +3104,18 @@ class Home2Page extends StatelessWidget {
                       ],
                     ),
                   ),
+                  // Row with two buttons (Slot Booking & Reviews)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildBlueButton(context, "Slot Booking", Icons.schedule, const BookingSlotPage()),
+                        const SizedBox(width: 20),
+                        _buildBlueButton(context, "Reviews", Icons.reviews, const ReviewsPage()),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -2820,6 +3129,35 @@ class Home2Page extends StatelessWidget {
             child: _buildChatBotButton(context),
           ),
         ),
+      ),
+    );
+  }
+
+  static Widget _buildBlueButton(BuildContext context, String label, IconData icon, Widget page) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => page),
+        );
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.blue,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        fixedSize: const Size(130, 70), // Adjusted button size to prevent overflow
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: Colors.white, size: 24), // Reduced icon size
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white), // Reduced font size
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
@@ -2845,7 +3183,7 @@ class Home2Page extends StatelessWidget {
   }
 
   Widget _buildBottomNavBar(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 100,
       child: BottomAppBar(
         shape: const CircularNotchedRectangle(),
@@ -2889,6 +3227,7 @@ class Home2Page extends StatelessWidget {
     );
   }
 }
+
 class Search2Page extends StatelessWidget {
   const Search2Page({Key? key}) : super(key: key);
 
@@ -3855,6 +4194,296 @@ class _ReviewPageState extends State<ReviewPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+
+class ReviewsPage extends StatefulWidget {
+  const ReviewsPage({Key? key}) : super(key: key);
+
+  @override
+  _ReviewsPageState createState() => _ReviewsPageState();
+}
+
+class _ReviewsPageState extends State<ReviewsPage> {
+  String _selectedFilter = "Default";
+  bool _showFilterOptions = false;
+  final List<String> _filters = ["Latest", "Earliest", "Default"];
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const Home2Page()),
+          ModalRoute.withName('/'),
+        );
+        return false;
+      },
+      child: Scaffold(
+        appBar: CustomTopBar(
+          onBackPress: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const Home2Page()),
+              ModalRoute.withName('/'),
+            );
+          },
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  "Reviews",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _showFilterOptions = !_showFilterOptions;
+                        });
+                      },
+                      icon: const Icon(Icons.filter_list),
+                      label: const Text("Filter"),
+                    ),
+                    Text(_selectedFilter, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              if (_showFilterOptions)
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                  ),
+                  child: Column(
+                    children: _filters.map((filter) {
+                      return ListTile(
+                        title: Text(filter),
+                        onTap: () {
+                          setState(() {
+                            _selectedFilter = filter;
+                            _showFilterOptions = false;
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: 5, // Example count, replace with actual data
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text("Review Title", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          Text("Review details will appear here...", style: TextStyle(color: Colors.grey)),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10, right: 20),
+            child: _buildChatBotButton(context),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatBotButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ChatPage()),
+        );
+      },
+      backgroundColor: Colors.blue,
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/bot_icon.png',
+          height: 50,
+          width: 50,
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+}
+
+
+class BookingSlotPage extends StatefulWidget {
+  const BookingSlotPage({Key? key}) : super(key: key);
+
+  @override
+  _BookingSlotPageState createState() => _BookingSlotPageState();
+}
+
+class _BookingSlotPageState extends State<BookingSlotPage> {
+  String _selectedFilter = "Default";
+  bool _showFilterOptions = false;
+  final List<String> _filters = ["Latest", "Earliest", "Default"];
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const Home2Page()),
+          ModalRoute.withName('/'),
+        );
+        return false;
+      },
+      child: Scaffold(
+        appBar: CustomTopBar(
+          onBackPress: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const Home2Page()),
+              ModalRoute.withName('/'),
+            );
+          },
+        ),
+        body: SafeArea(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  "Booking Slots",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        setState(() {
+                          _showFilterOptions = !_showFilterOptions;
+                        });
+                      },
+                      icon: const Icon(Icons.filter_list),
+                      label: const Text("Filter"),
+                    ),
+                    Text(_selectedFilter, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              if (_showFilterOptions)
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                  ),
+                  child: Column(
+                    children: _filters.map((filter) {
+                      return ListTile(
+                        title: Text(filter),
+                        onTap: () {
+                          setState(() {
+                            _selectedFilter = filter;
+                            _showFilterOptions = false;
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ),
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: 5, // Example count, replace with actual data
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text("Booking Slot Title", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 8),
+                          Text("Booking slot details will appear here...", style: TextStyle(color: Colors.grey)),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 10, right: 20),
+            child: _buildChatBotButton(context),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatBotButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ChatPage()),
+        );
+      },
+      backgroundColor: Colors.blue,
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/bot_icon.png',
+          height: 50,
+          width: 50,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
