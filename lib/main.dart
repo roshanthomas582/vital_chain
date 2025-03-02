@@ -1835,6 +1835,11 @@ class HomePage extends StatelessWidget {
             context,
             MaterialPageRoute(builder: (context) => const LabResultsPage()),
           );
+        } else if (label == "Chronic Diseases") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ChronicDiseasesPage()),
+          );
         } else {
           print('$label tapped');
         }
@@ -3041,7 +3046,175 @@ class _DocumentPageState extends State<DocumentPage> {
   }
 }
 
+class ChronicDiseasesPage extends StatefulWidget {
+  const ChronicDiseasesPage({Key? key}) : super(key: key);
 
+  @override
+  _ChronicDiseasesPageState createState() => _ChronicDiseasesPageState();
+}
+
+class _ChronicDiseasesPageState extends State<ChronicDiseasesPage> {
+  final List<Map<String, String>> _diseases = [];
+
+  void _addDisease() {
+    String fileName = "";
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Upload File"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  // Simulate file upload
+                  final result = await _simulateFileUpload();
+                  if (result != null) {
+                    setState(() {
+                      fileName = result;
+                    });
+                  }
+                },
+                child: const Text("Upload File"),
+              ),
+              const SizedBox(height: 16),
+              if (fileName.isNotEmpty)
+                Text("Uploaded File: $fileName"),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                if (fileName.isNotEmpty) {
+                  setState(() {
+                    _diseases.add({"name": fileName});
+                  });
+                }
+                Navigator.pop(context);
+              },
+              child: const Text("Add"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Simulate file upload (replace with actual file picker logic)
+  Future<String?> _simulateFileUpload() async {
+    await Future.delayed(const Duration(seconds: 1)); // Simulate delay
+    return "example_file.pdf"; // Return a dummy file name
+  }
+
+  void _deleteDisease(int index) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Delete File"),
+          content: const Text("Do you want to delete this file?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("No"),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  _diseases.removeAt(index);
+                });
+                Navigator.pop(context);
+              },
+              child: const Text("Yes"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(60),
+        child: CustomTopBar(
+          onBackPress: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                "Chronic Diseases",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: _diseases.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: ListTile(
+                      title: Text(_diseases[index]["name"]!),
+                      onTap: () => _deleteDisease(index),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 60, bottom: 10),
+            child: FloatingActionButton(
+              onPressed: _addDisease,
+              backgroundColor: Colors.blue,
+              child: const Icon(Icons.add),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 40, bottom: 10),
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ChatPage()),
+                );
+              },
+              backgroundColor: Colors.blue,
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/images/bot_icon.png',
+                  height: 50,
+                  width: 50,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class Home2Page extends StatelessWidget {
   const Home2Page({Key? key}) : super(key: key);
@@ -4356,6 +4529,7 @@ class _BookingSlotPageState extends State<BookingSlotPage> {
   String _selectedFilter = "Default";
   bool _showFilterOptions = false;
   final List<String> _filters = ["Latest", "Earliest", "Default"];
+  List<String> _bookingSlots = List.generate(5, (index) => "Slot $index");
 
   @override
   Widget build(BuildContext context) {
@@ -4378,63 +4552,104 @@ class _BookingSlotPageState extends State<BookingSlotPage> {
             );
           },
         ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  "Booking Slots",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: Text(
+                "Slot Booking",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () {
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _showFilterOptions = !_showFilterOptions;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20), // Oval shape
+                      ),
+                      backgroundColor: Colors.white, // White background
+                      foregroundColor: Colors.purple, // Purple icon and text
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(Icons.filter_list),
+                        SizedBox(width: 8),
+                        Text("Filter"),
+                      ],
+                    ),
+                  ),
+                  Text(_selectedFilter, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
+            if (_showFilterOptions)
+              Container(
+                width: MediaQuery.of(context).size.width * 0.9, // 90% of screen width
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start, // Left-align content
+                  children: _filters.map((filter) {
+                    return GestureDetector(
+                      onTap: () {
                         setState(() {
-                          _showFilterOptions = !_showFilterOptions;
+                          _selectedFilter = filter;
+                          _showFilterOptions = false;
                         });
                       },
-                      icon: const Icon(Icons.filter_list),
-                      label: const Text("Filter"),
-                    ),
-                    Text(_selectedFilter, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  ],
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                        decoration: BoxDecoration(
+                          color: _selectedFilter == filter ? Colors.purple.withOpacity(0.1) : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.circle,
+                              size: 12,
+                              color: _selectedFilter == filter ? Colors.purple : Colors.grey,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              filter,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: _selectedFilter == filter ? Colors.purple : Colors.black,
+                                fontWeight: _selectedFilter == filter ? FontWeight.bold : FontWeight.normal,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
-              if (_showFilterOptions)
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
-                  ),
-                  child: Column(
-                    children: _filters.map((filter) {
-                      return ListTile(
-                        title: Text(filter),
-                        onTap: () {
-                          setState(() {
-                            _selectedFilter = filter;
-                            _showFilterOptions = false;
-                          });
-                        },
-                      );
-                    }).toList(),
-                  ),
-                ),
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: 5, // Example count, replace with actual data
-                  itemBuilder: (context, index) {
-                    return Container(
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: _bookingSlots.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () => _showSlotDialog(context, index),
+                    child: Container(
                       margin: const EdgeInsets.only(bottom: 16),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -4444,27 +4659,129 @@ class _BookingSlotPageState extends State<BookingSlotPage> {
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text("Booking Slot Title", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          SizedBox(height: 8),
-                          Text("Booking slot details will appear here...", style: TextStyle(color: Colors.grey)),
+                        children: [
+                          Text(_bookingSlots[index], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 8),
+                          const Text("Booking slot details will appear here...", style: TextStyle(color: Colors.grey)),
                         ],
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-        floatingActionButton: Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 10, right: 20),
-            child: _buildChatBotButton(context),
-          ),
-        ),
+        floatingActionButton: _buildChatBotButton(context),
       ),
+    );
+  }
+
+  void _showSlotDialog(BuildContext context, int index) {
+    DateTime? selectedDate;
+    TimeOfDay? selectedTime;
+    bool accepted = false;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text("Slots"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (!accepted) ...[
+                    const Text("Do you want to accept the slot?"),
+                    const SizedBox(height: 10),
+                  ] else ...[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () async {
+                            final DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime(2100),
+                            );
+                            if (pickedDate != null) {
+                              setState(() {
+                                selectedDate = pickedDate;
+                              });
+                            }
+                          },
+                          child: const Text("Select Date", style: TextStyle(color: Colors.black)),
+                        ),
+                        Text(selectedDate != null ? "${selectedDate!.toLocal()}".split(' ')[0] : "Not selected"),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () async {
+                            final TimeOfDay? pickedTime = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                            );
+                            if (pickedTime != null) {
+                              setState(() {
+                                selectedTime = pickedTime;
+                              });
+                            }
+                          },
+                          child: const Text("Select Time", style: TextStyle(color: Colors.black)),
+                        ),
+                        Text(selectedTime?.format(context) ?? "Not selected"),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ],
+              ),
+              actions: [
+                if (!accepted) ...[
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _bookingSlots.removeAt(index);
+                      });
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Reject", style: TextStyle(color: Colors.red)),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        accepted = true;
+                      });
+                    },
+                    child: const Text("Accept", style: TextStyle(color: Colors.black)),
+                  ),
+                ] else ...[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Close", style: TextStyle(color: Colors.black)),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      // Handle OK action
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("OK", style: TextStyle(color: Colors.black)),
+                  ),
+                ],
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
