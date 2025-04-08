@@ -131,4 +131,7 @@ Vital Chain is currently developed using Flutter and optimized for **mobile plat
 
 ## 📷 Screenshots
 
+
+![WhatsApp Image 2025-04-08 at 9 00 26 AM](https://github.com/user-attachments/assets/67137c97-829d-43ad-a0fd-e7b0753ac573)
+
 ---
