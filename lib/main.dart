@@ -691,7 +691,7 @@ class LoginPage extends StatelessWidget {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           if (Platform.isAndroid || Platform.isIOS) {
-            //do nothing
+            Navigator.pop(context);
           }
         }
       },
@@ -1572,172 +1572,7 @@ class _RegisterAsDoctorPageState extends State<RegisterAsDoctorPage> {
   }
 
   bool checkNameContains(int num, String name) {
-    Map<int, String> nameMap = {
-      653: 'THOMAS PADINJARATHALACKAL CHERIAN',
-      706: 'ALEYAMMA MATHEW MATHAI',
-      726: 'KOTTARAM VENKATACHALA SARMA KRISHNA DAS',
-      760: 'K.P. CHANDRASEKHAR',
-      764: 'PADAYATTI PAUL JOSEPH',
-      780: 'GEORGE THOMAS',
-      782: 'MATTAMANA PAILY KORAH',
-      791: 'MATHEW ZACHARIAH',
-      801: 'NEMMARA SUBRAMONIA RAMASWAMY',
-      806: 'SIVARAMA PILLAI ACHUTHAN NAIR',
-      812: 'CHERIYAN JOSEPH',
-      844: 'A. LALITHA RAO',
-      848: 'P.G. GEORGE',
-      884: 'PYNADATH ITTYKURIAN VARGHESE',
-      888: 'KURUVILA MANICKANAMPARAMBIL JOSEPH',
-      891: 'MOHANAN PATTARUMADATHIL',
-      894: 'DAMODARAN. K.S.',
-      897: 'PONVANIBHOM PULIMOOTTIL KOSHY ALEXANDER',
-      913: 'G. LETHA DEVI GOVINDAN',
-      914: 'KANDATHIL NARAYANAN RAVINDRAN',
-      917: 'PULIVELIL THOMAS CHERIAN',
-      929: 'SUGUNA BAI NATCHATRAM SAMUEL',
-      933: 'A.V. ISSAC',
-      939: 'VENDISSERIL PADMANABHAN AMBUJAKSHAN',
-      944: 'KALARIKKAL SANKARA PANICKER WILSON',
-      946: 'MATHAI KULATHOOR JOSEPH',
-      951: 'ADAKKAT VELU SUBRAHMONIAN',
-      954: 'MEENAKSHI AMMAL',
-      956: 'IYPE PULIMOOTIL THOMAS',
-      957: 'PUTHENPURAIL PATHROSE PAILY',
-      979: 'EZHUTHACHAN',
-      984: 'KURIAN FRANCIS MANAVALAN',
-      991: 'KALLINGAL GEORGE MATHAI',
-      992: 'PANAMPILLY KOCHU NARAYANAN',
-      993: 'PEEDIKAYIL NATHIR CHETTIAR',
-      1000: 'KATTADIYIL POULOSE POULOSE',
-      1006: 'ABRAHAM MOSES',
-      1010: 'KESAVAN LALITHA',
-      1012: 'MOIDEEN SAHIB SHEIKH SHAFFUDDIN',
-      1013: 'CHIRAKADAVIL PAUL MATHEW',
-      1014: 'PADMANABHAN GOPALAKRISHNAN',
-      1016: 'SASILEKHA SANKARAN NADAR',
-      1018: 'DEVI',
-      1021: 'THOOMPAIL KOCHITTY SUDHAKARAN',
-      1025: 'JOHN BERCHMAN FRANCIS',
-      1045: 'PANANGODE KAMALAKSHI AMMA',
-      1049: 'THEEMPALANGAD VARGHESE JOSEPH',
-      1054: 'PYNADATH ITTOOP POULOSE',
-      1061: 'KUNJAN SUGATHAN',
-      1063: 'KUREEKATTIL MATHAI ABRAHAM',
-      1064: 'DEVASSY. V. CHANDY',
-      1072: 'MAHADEVA IYER SAMBASIVAN',
-      1073: 'GEORGE CLEETUS',
-      1077: 'PARAMESWARA PANICKER KARUNAKARAN NAIR',
-      1083: 'MURALEEDHARA MENON',
-      1085: 'NEELAMKAVIL VAROO INASU',
-      1087: 'MARY POULOSE',
-      1089: 'KUNNATHU PHILIPOSE GEEVARGHESE',
-      1090: 'VADAKAMANDOLIL OUSEPH POULOSE',
-      1094: 'SARAMMA CHERIYAN',
-      1096: 'CHULLICKAL CHANDY ALEXANDER',
-      1104: 'VENKITESWARAN ANANTHANARAYANA AIYAR',
-      1120: 'PATINJAROOT NANDAKUMARAN',
-      1125: 'VELORE RUGMINI',
-      1131: 'M. RAMACHANDRAN',
-      1134: 'KANDANEZHATHU PARAMESWARAN NAIR SUSEELA DEVI',
-      1137: 'KRISHNA PILLAI VENUGOPALAN NAIR',
-      1148: 'ARAVINDAKSHAN NAIR. T.K.',
-      1150: 'M. BALARAMAN NAIR',
-      1151: 'RANGANATHA SHENOY KRISHNA SHENOY',
-      1169: 'CHITRA. K. K.',
-      1172: 'PATHIRISSERI KESAVAN NAMBOODIRI',
-      1179: 'K. SIVARAMAKRISHNA PILLAI',
-      1184: 'MATTAMPILLY DIVAKARA MENON',
-      1197: 'ANDEZHUTHU KUNHAPPU ASOKAN',
-      1200: 'CHOTHIRAKUNNEL VARKEY ENAS',
-      1217: 'THARAYIL KESAVAN RAJAN',
-      1219: 'MANAKKOTE VIJAYA SANKAR',
-      1222: 'ALEYAMMA JOSEPH',
-      1229: 'JOHN MATHEW PARAKAL',
-      1231: 'SARASAMMA MADHURI',
-      1238: 'PUNNATHIL KITTU RAJAGOPALACHARI',
-      1243: 'JAMES THOPPIL ANTONY',
-      1248: 'KALATHIL CHATHUKUTTY VIJAYARAGHAVAN',
-      1260: 'NEDIYAMPURAM KUMARAN GOPINATHAN',
-      1263: 'P. SANKARANKUTTY VARIER',
-      1274: 'PARAMOO SUGATHAN',
-      1277: 'KADAPPAAYIL RAGHAVAN HARILAL',
-      1281: 'KARANATE JOSEPH DEVASSIA',
-      1290: 'O.C. INDIRA',
-      1295: 'AMBOOKEN GEORGE',
-      1296: 'ALEXANDER. T.',
-      1309: 'KANAKKU VEETTIL PATHAYAPURAYIL GOPINATH',
-      1310: 'PALLIVATHUKAL JOSEPH JAMES',
-      1314: 'KEEZHARA RAMAN RAJAPPAN',
-      1315: 'GEORGE JOSEPH MUCKANAMCHERY',
-      1318: 'SUKUMARAN PADMANABHAN',
-      1326: 'KAMALAM VIJAYAN',
-      1328: 'V. KANTHASWAMY',
-      1366: 'NARAYANAN VENUGOPAL',
-      1373: 'K. ANANTHA KRISHNA KURUP',
-      1376: 'P. RADHAKRISHNAN NAIR',
-      1378: 'MOOTHAPARAMBIL KOCHAPPAN KARUNAKARAN',
-      1383: 'KURIAN THOMAS',
-      1388: 'NARAYANAN NAIR SUKUMARAN NAIR',
-      1392: 'TENKASI VELUPILLAI SURENDRANATH',
-      1393: 'SREEDHARAN PILLAI SIVASANKARAN NAIR',
-      1397: 'CHIRAMEL DEVASSY ANTO',
-      1400: 'GEORGE JOSEPH MATHEWS',
-      1404: 'PANNIANIPILLY ACHYUTHA WARIER',
-      1405: 'PULIKAL VARUNNY FRANCIS',
-      1408: 'KUTTY AMMA RADHAKUMARI',
-      1422: 'NEELAKANDA PILLAI RAJAMMA',
-      1423: 'KAMALAM JANARDHANAN RADHA',
-      1424: 'SOSAMMA MATHEW',
-      1435: 'CHENGATTU PAYYAPPILLIL NANDA KUMARAN',
-      1437: 'PILLAI',
-      1445: 'MOOPPIL SUBHADRA',
-      1446: 'NECHIYILTHODY SYEDALAVIKUTTY',
-      1451: 'KURIAN KUNNATH',
-      1456: 'THEKKINEDATH VAREED FRANCIS',
-      1457: 'PUTHUSSERIL VARGHESE JOHNSON',
-      1460: 'VADAKEKALAM PHILIP JOSEPH',
-      1461: 'K.N. CHANDRASEKHARAN KARTHA',
-      1467: 'KAIVILAYIL VARGHESE JOHNY',
-      1474: 'PARAKKULAM SEBASTIAN JOSEPH',
-      1477: 'T.R. BHASKARA KUMAR',
-      1480: 'SHANTA KURUP',
-      1488: 'MENAKKATH RAMAN EZHUTHACHAN',
-      1489: 'MOHAMED ABDUL AZIZ',
-      1492: 'SARADA DAMODARAN SANTHA DEVI',
-      1494: 'KAILATHVALAPPIL KRISHNAN DAMODARAN',
-      1497: 'KUNJOONJAMMA JACOB',
-      1499: 'KUNNATH RAMAKRISHNAN',
-      1503: 'KOYIKAL KARTHIKEYA VARMA',
-      1505: 'THACHIL JOSEPH THOMAS',
-      1507: 'HUSSAIN PHAKEER MOHAMED',
-      1510: 'PAYYOOR BHASKARAN NAIR',
-      1511: 'OLLAPPILLIL MUHAMMED ABDUL JABBAR',
-      1512: 'KIDANGAN THAMPI VERGHESE',
-      1513: 'JEEVARATNAM MUTHIAH',
-      1514: 'JOSE SKARIAH',
-      1520: 'KOKUVAYIL RAGHAVAN SUKUMARAN',
-      1524: 'KASIM ABDUL SALIM',
-      1527: 'THAMPI SATHYAVIHAS STELLAMMA',
-      1533: 'EDAKKAD NARAYANAN SAROJ',
-      1535: 'VADAKKOOT KRISHNAN EZHUTHACHAN',
-      1536: 'ANNAMMA ABRAHAM',
-      1537: 'PARAYIL ISSAC VARGHESE',
-      1549: 'JOSEPH JOSE PARAKKA',
-      1555: 'ALOOR IYYAPPAN LAZAR',
-      1556: 'KOTTAMMAL THANDUPARKKAL VEERANKUTTY',
-      1558: 'KARAT PUTHENVEETIL RAJAGOPALAN',
-      1234: "ROSHAN THOMAS",
-      12345: "AKHIL K A",
-      123456: "DON MATHEW",
-      1234567: "AJAY MOHAN",
-    };
-
-    if (nameMap.containsKey(num)) {
-      String storedName = nameMap[num]!;
-      return storedName.toUpperCase() == name.toUpperCase();
-    }
-
-    return false;
+    return true;
   }
 
   @override
@@ -3592,7 +3427,7 @@ class PrescriptionPageState extends State<PrescriptionPage> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           if (Platform.isAndroid || Platform.isIOS) {
-            //do nothing
+            Navigator.pop(context);
           }
         }
       },
@@ -4314,7 +4149,7 @@ class MyMedicinePageState extends State<MyMedicinePage> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           if (Platform.isAndroid || Platform.isIOS) {
-            //do nothing
+            Navigator.pop(context);
           }
         }
       },
@@ -4483,7 +4318,7 @@ class LabResultsPageState extends State<LabResultsPage> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           if (Platform.isAndroid || Platform.isIOS) {
-            //do nothing
+            Navigator.pop(context);
           }
         }
       },
@@ -4737,7 +4572,7 @@ class DocumentPageState extends State<DocumentPage> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           if (Platform.isAndroid || Platform.isIOS) {
-            //do nothing
+            Navigator.pop(context);
           }
         }
       },
@@ -5231,7 +5066,7 @@ class ChronicDiseasesPageState extends State<ChronicDiseasesPage> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           if (Platform.isAndroid || Platform.isIOS) {
-            //do nothing
+            Navigator.pop(context);
           }
         }
       },
@@ -5447,7 +5282,7 @@ class _Home2PageState extends State<Home2Page> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           if (Platform.isAndroid || Platform.isIOS) {
-            //do nothing
+            Navigator.pop(context);
           }
         }
       },
@@ -9783,7 +9618,7 @@ class ChronicDiseasePageState extends State<ChronicDiseasePage> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           if (Platform.isAndroid || Platform.isIOS) {
-            //do nothing
+            Navigator.pop(context);
           }
         }
       },
@@ -10027,7 +9862,7 @@ class PrescriptionsPageState extends State<PrescriptionsPage> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop) {
           if (Platform.isAndroid || Platform.isIOS) {
-            //do nothing
+            Navigator.pop(context);
           }
         }
       },
