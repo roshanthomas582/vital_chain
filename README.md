@@ -131,9 +131,10 @@ Vital Chain is currently developed using Flutter and optimized for **mobile plat
 
 ## 📷 Screenshots
 
+
 - **User Side**
-![user1](https://github.com/user-attachments/assets/04adb6a4-3e22-479a-a6cf-d5b37f6c385f)
-![user2](https://github.com/user-attachments/assets/e7d431d9-cdb2-4f97-9f3b-2d32029b8073)
+
+![user1](https://github.com/user-attachments/assets/04adb6a4-3e22-479a-a6cf-d5b37f6c385f)       ![user2](https://github.com/user-attachments/assets/e7d431d9-cdb2-4f97-9f3b-2d32029b8073)
 ![user3](https://github.com/user-attachments/assets/f42e29ac-15ec-47cd-b065-2c77291b3860)
 ![user4](https://github.com/user-attachments/assets/e406bfe4-2d6b-4ff5-bfd8-a5af93e93dc4)
 ![user5](https://github.com/user-attachments/assets/885b8c47-438c-4c20-8750-95da2a681c4b)
@@ -155,7 +156,9 @@ Vital Chain is currently developed using Flutter and optimized for **mobile plat
 ![user21](https://github.com/user-attachments/assets/b1e9a19c-5602-4cd7-8f4c-e10f14c6ee39)
 ![user22](https://github.com/user-attachments/assets/85f09feb-9162-4bc7-82f2-fe9612cdfc6d)
 
-- **Doctor Side**
+
+- **Doctor Side** 
+
 ![doc1](https://github.com/user-attachments/assets/a4a46a98-9cb8-44ce-b0d2-4fd0f6cfafa6)
 ![doc2](https://github.com/user-attachments/assets/46817507-1fa3-40b8-9f71-1308f252e752)
 ![doc3](https://github.com/user-attachments/assets/d573f3eb-68d8-4c82-9809-75e69ac8aec0)
@@ -172,4 +175,5 @@ Vital Chain is currently developed using Flutter and optimized for **mobile plat
 ![doc14](https://github.com/user-attachments/assets/4c7163d1-2c4a-432f-9a97-c660d196ce9a)
 ![doc15](https://github.com/user-attachments/assets/96c4f056-86bb-4ab3-aebf-0677af24ebb5)
 ![doc16](https://github.com/user-attachments/assets/40014e59-1754-489b-baf8-44fe75ec868b)
+
 ---
