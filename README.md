@@ -1,6 +1,8 @@
 # Vital Chain
 
-**Vital Chain** is a mobile application designed to **consolidate and manage a patient's complete health records in one place**. With features that benefit both **patients** and **doctors**, the app creates a seamless, secure, and centralized healthcare experience.
+**Vital Chain** is a **Flutter mobile application** designed to **consolidate and manage a patient's complete medical health records in one place**. It addresses the critical issue of **fragmented health data** by bringing together all documents, prescriptions, certificates, and chronic disease records into a single, accessible platform. The app also **eliminates the dependency on handwritten paper prescriptions** by automatically generating and storing digital PDF prescriptions issued by doctors.
+
+By providing real-time access to a patient’s **allergies, medical history , ongoing medications , prescreptions , lab results and certificates**, Vital Chain ensures that doctors can make more informed decisions, leading to **safer and more effective treatment**. With features tailored for both **patients** and **doctors**, Vital Chain creates a seamless, secure, and centralized healthcare experience.
 
 ---
 
@@ -24,7 +26,7 @@
     - Specialization, educational qualifications
     - Work history
     - Appointment request button
-    - Patient reviews
+    - add reviews for the doctor.
 
 - **🤖 Smart Chatbot**
   - Get instant information about medicines such as usage, dosage, and potential side effects.
@@ -78,18 +80,25 @@
   - Only doctors can upload **prescriptions** and **certificates**.
   - Patients cannot modify or upload these records.
 
-- **Automated Medication Tracker:** 
-  - Active medicines are fetched from prescriptions and shown only if valid for the current day.
-
 - **Restricted Access to Patient Data:** 
   - Doctors can only view and modify **today’s scheduled patients** for added security and privacy.
+ 
+- **Firebase Authentication:** 
+  - Uses Firebase Authentication for secure login and user verification.
+  - Passwords are hashed and securely stored by Firebase.
+
+- **Database Rules:** 
+  - Firebase Firestore security rules are applied to allow access only to authenticated users based on roles (patient or doctor).
+
+- **Data Encryption:** 
+  - All data in Firebase Firestore and files in Firebase Storage are **encrypted in transit and at rest** by default to ensure confidentiality and integrity.
 
 ---
 
 ## 📄 Auto-Generated PDF Prescriptions
 
 - Includes:
-  - Doctor’s name, photo, hospital, and signature
+  - Doctor’s name, hospital, and signature
   - Patient’s name, age, and profile data
   - Medical details: problem, diagnosis, suggestions, and prescribed medicines
 - Automatically created and saved for both doctor and patient views.
@@ -100,20 +109,14 @@
 
 - Centralize healthcare data management for government or institutional deployment.
 - Expand chatbot capabilities with AI-based diagnostics and alerts.
-- Enhance analytics for chronic disease tracking and medicine effectiveness.
+- Enhance analytics and display charts/graphs for chronic disease tracking and medicine effectiveness.
 - Add daily medication reminders via notifications to help users take their medicines on time.
 
 ---
 
 ## 📌 Note
 
-Vital Chain is currently developed and optimized for **mobile platforms**.
-
----
-
-## 📷 Screenshots
-
-
+Vital Chain is currently developed using Flutter and optimized for **mobile platforms**.
 
 ---
 
@@ -123,7 +126,9 @@ Vital Chain is currently developed and optimized for **mobile platforms**.
 - Firebase Authentication
 - Firestore Database
 - Firebase Storage
-- PDF Generation Libraries
-- State Management (Provider/Bloc/etc.)
+
+---
+
+## 📷 Screenshots
 
 ---
