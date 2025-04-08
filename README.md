@@ -168,6 +168,7 @@ Vital Chain is currently developed using Flutter and optimized for **mobile plat
 ![doc7](https://github.com/user-attachments/assets/734c88f8-8c95-4652-9346-ac99702639b3)
 ![doc8](https://github.com/user-attachments/assets/183ac6c5-d884-45ec-902f-4bef64393f6a)
 ![doc9](https://github.com/user-attachments/assets/f55c881d-fd0d-48d6-84bb-5bc72d02ce01)
+![doc15](https://github.com/user-attachments/assets/96c4f056-86bb-4ab3-aebf-0677af24ebb5)
 ![doc10](https://github.com/user-attachments/assets/4b9e15c6-0783-4f9e-8939-b4987ae47214)
 ![doc11](https://github.com/user-attachments/assets/09c4fdac-539b-44b9-bade-faa6642db818)
 ![doc12](https://github.com/user-attachments/assets/90811569-6c40-43b8-a1c3-2ba7d41479a8)
